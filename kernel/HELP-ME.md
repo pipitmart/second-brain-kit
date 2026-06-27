@@ -1,6 +1,5 @@
 # HELP-ME.md — Troubleshooter & Red Alert
-*Part of: ROOT v2.2 / kernel*
-*Version: 1.0 | 11 Jun 2026*
+*Part of: ROOT / kernel*
 *Scope: Kernel. Person-agnostic. The system's support channel — there is no architect to call.*
 *Triggered by: `/help-me`, escalation from `/stress-test` (environment failures), or a red-alert flag raised at `/orient`.*
 

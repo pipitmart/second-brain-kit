@@ -1,6 +1,5 @@
 # TEACHING-LOOP.md — How the System Teaches
-*Part of: ROOT v2.2 / kernel*
-*Version: 1.0 | 11 Jun 2026*
+*Part of: ROOT / kernel*
 *Scope: Kernel. Person-agnostic. The reusable scaffold for teaching the user anything — a skill, a concept, or the system itself.*
 *Used by: any session where the user is learning; `/genesis` and onboarding (the subject is the system); `/goal` (shows the checklist).*
 

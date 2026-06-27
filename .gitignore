@@ -1,10 +1,7 @@
-# The personal layer NEVER belongs in this repo. Hard block.
+﻿# The personal layer NEVER belongs in this repo. Hard block.
 profile/
 **/profile/
-ABOUT-ME.md
-# Project working data is private
-Decisions Log*.md
-Archive*.md
+
 # OS / editor junk
 .DS_Store
 Thumbs.db

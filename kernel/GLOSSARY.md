@@ -1,6 +1,5 @@
 # GLOSSARY.md — Terms & Commands
-*Part of: ROOT v2.2 / kernel*
-*Version: 1.1 | 11 Jun 2026*
+*Part of: ROOT / kernel*
 *Scope: Kernel. Person-agnostic. Plain-language definitions so any user — technical or not — knows what a term means and why it matters here.*
 
 > If you hit a word in any kernel file you don't recognise, it's defined here. Each entry says **what it is** and **why it matters**.
@@ -15,7 +14,7 @@
 
 **ROOT** — The single Drive folder that holds the whole system (`kernel/`, `profile/`, `skills/`). *Why it matters:* it's the one fixed starting point. Everything is found relative to it.
 
-**Anchor** — The ROOT folder's ID — the one and only ID the system hardcodes. *Why it matters:* it's recorded in your profile (not the kernel), because each person's ROOT is a different folder.
+**Fingerprint** — How the system finds the live ROOT at boot: it's the folder containing `kernel/CLAUDE-KERNEL.md` that sits beside your project folders (never inside one) — whether that's at the Drive top level or inside a shared container that also holds the projects. No folder ID is hardcoded anywhere. *Why it matters:* IDs go stale when folders are renamed or replaced; the fingerprint survives any rename, any version, any machine. Exactly one ROOT is live — copies inside project folders or marked archived are snapshots, never the system. *(Your profile may note ROOT's folder ID as a convenience pointer; if it ever disagrees with the fingerprint, the fingerprint wins.)*
 
 ---
 
@@ -47,7 +46,7 @@
 
 ## Files & storage
 
-**File ID** — The hidden code Drive gives every file (e.g. `1zOg5M0k...`). *Why it matters:* opaque and person-specific, so the kernel does **not** use them — it finds files by name instead. The only exception is the ROOT anchor.
+**File ID** — The hidden code Drive gives every file. *Why it matters:* opaque and person-specific, so the kernel does **not** use them — it finds ROOT by fingerprint and everything else by name. Any ID written in a profile file is a convenience pointer, never the source of truth.
 
 **Name search** — Finding a file by its name within ROOT or a project folder, instead of by ID. *Why it matters:* portable (works in anyone's system) and human-readable. Your job is to keep file names correct.
 
@@ -73,7 +72,7 @@
 
 **`/new-project`** — Run **when starting a new piece of work**. Walks from a rough objective to a set-up, verified project.
 
-**`/genesis`** — Run **once per user** (or auto-triggered when `/stress-test` finds an empty profile). Builds a new user's profile in ~15 minutes: three honest opening questions, friction diagnosis, a first project scoped from the user's own data. *Why it matters:* it's how the system starts for someone new — sufficient on day one, then self-correcting via the living mirror.
+**`/genesis`** — How the system starts for someone new (auto-triggered when `/stress-test` finds an empty profile). Opens with *why this exists*, then forks: **Demo** — a repeatable ten-minute guided run on sample data (a fictional shop owner) that shows the memory loop working across a brand-new chat, touching nothing real; **Live** — builds *your* profile, **once per user**: three honest opening questions, friction diagnosis, a first project scoped from your own data. *Why it matters:* Demo lets you feel the value before investing anything; Live makes it yours — sufficient on day one, then self-correcting via the living mirror.
 
 **`/help-me`** — Run **when you're stuck** — or when the system flags that you might be. Two branches: if the *task or system* is broken, Claude snapshots your work, fixes the problem, and restores you to where you stopped; if *you* are in a loop (work stalled, a red line crossed), it walks the red-alert flow — one question, honest triage, one small re-entry step. *Why it matters:* it's the support channel. There is no architect to call.
 

@@ -1,19 +1,19 @@
 # NEW-PROJECT.md — New Project Flow
-*Part of: ROOT v2.2 / kernel*
-*Version: 1.1 | 11 Jun 2026*
+*Part of: ROOT / kernel*
 *Scope: Kernel. Person-agnostic. From a rough objective to a verified, ready-to-work project.*
 *Triggered by: `/new-project [objective]`*
 
-> Replaces v2.1's NEW-CW-PROJECT + NEW-CHAT-PROJECT — one flow, with a branch for "has Drive (Cowork)" vs "no Drive (Chat)".
+> One flow, with a branch for "has Drive (Cowork)" vs "no Drive (Chat)".
 
 ---
 
 ## Hard rules
 
-1. **Claude builds the project files in place** (folder, README, Decisions Log) once the objective is agreed — the user approves each step. *(This reverses v2.1's manual-checklist rule, which existed only because `create_file` made duplicates. In-place Edit fixed that.)*
+1. **Claude builds the project files in place** (folder, README, Decisions Log) once the objective is agreed — the user approves each step. *(In-place Edit makes this safe; direct `create_file` used to spawn duplicates.)*
 2. **No file creation without write access.** If the target folder isn't mounted + Available offline, stop and have the user mount it — never fall back to `create_file` as a workaround. *(Creating a brand-new file that doesn't exist yet is fine; but the folder must be locally editable for everything after.)*
-3. **Don't start the actual work** (research, analysis, writing) until `/orient` passes green.
-4. **Don't skip phases.**
+3. **The project folder is a sibling of ROOT — created alongside it in Drive, never inside ROOT.** ROOT holds the engine and the private profile; project data stays separate. This keeps ROOT clean (it's only edited when the system changes) and preserves the privacy wall when the kit is shared — project content can never ride along with the kernel.
+4. **Don't start the actual work** (research, analysis, writing) until `/orient` passes green.
+5. **Don't skip phases.**
 
 ---
 
@@ -21,7 +21,7 @@
 
 - Objective is concrete and decision-oriented — not "explore X".
 - Folder + `README-[PROJECT].md` + `Decisions Log - [PROJECT].md` exist — correctly named, **exactly one each**.
-- README carries: objective, folder location, key people, constraints, priorities, conventions, **and the project's red line**.
+- README carries: objective, folder location, key people, constraints, priorities, conventions, **and the project's red line** — and **no live action list**. Open actions, decisions, and status live only in the Decisions Log; the README is the charter and changes only when the charter does.
 - Decisions Log seeded with the session's **small, concrete next actions** in Open Actions.
 - Project registered in `profile/PROJECTS.md`.
 - `/orient` runs green — no contradictions, SSOT singular, key people known.
@@ -41,7 +41,7 @@
 
 ### 0 — Access + instance gate
 - Has this machine passed `/stress-test`? If never set up → run it first.
-- Is the target folder mounted + Available offline (write access)? If not → have the user mount it. *(This is `/orient`'s Step 0, applied before building.)*
+- Are **both** the target project folder **and ROOT** mounted for write access? If not → have the user mount them. *(This is `/orient`'s Step 0, applied before building. ROOT must be writable too — the build registers the project in `profile/PROJECTS.md`, a ROOT write.)*
 
 ### 1 — Carry prior context
 - Name-search for any existing Decisions Log in the likely folder. If found, read it and carry decisions + open actions forward. Flag old naming for rename.
@@ -62,17 +62,30 @@ Probe until it's concrete and actionable:
 - Stress-test before showing the user: contradictions with global conventions? missing key people / scope / constraints? correct Decisions Log naming? Fix the gaps first.
 
 ### 4 — Build it *(Claude executes, user approves)*
-- Create the project folder (if new).
+- Create the project folder (if new) **as a sibling of ROOT — alongside it in Drive, never inside the ROOT folder** (Hard rule 3).
 - Create `README-[PROJECT].md` — instructions, folder location, key people, constraints.
 - Create `Decisions Log - [PROJECT].md` from `kernel/SSOT-TEMPLATE.md`.
 - Seed Open Actions with the session's small, concrete next steps.
 - **Register the project in `profile/PROJECTS.md`** — add its row (folder, SSOT, status Active).
+- **Optionally create `Skunkworks - [PROJECT].md`** from `kernel/SKUNKWORKS-TEMPLATE.md` — only when the project is likely to generate more ideas than its roadmap/backlog should hold. Skip for narrow, well-scoped projects.
 
 ### 5 — Wire Cowork *(Drive branch only)*
-- Create the Cowork project; paste the README instructions into project settings. *(The only per-machine step — Drive files sync on their own.)*
+- Create the Cowork project; paste the README instructions into project settings.
+- **Connect TWO folders to the project: the project folder AND ROOT.** Cowork scopes write access to connected folders, and a normal session writes to *both* — the project's Decisions Log **and** ROOT (`profile/PROJECTS.md` every `/offload`, the mirror in `ABOUT-ME.md` occasionally). Connect only the project folder and `/offload` will fail to update the index and mirror. This is the single most common setup miss — make it explicit, every project, every machine. *(`/orient` Step 0 detects a missing ROOT mount and prompts to fix it, but don't rely on the self-heal — connect both up front.)*
+- *(These mounts are the only per-machine step — the Drive files themselves sync on their own.)*
+
+> **One Cowork project = one SB project + ROOT.** Mount exactly those two folders — not a whole container of projects. A container folder holding ROOT + your projects is recommended for *finding* things on a busy Drive (see `profile/STACK.md`), but it is **organization, not a mount target**: mounting the whole container into one Cowork project makes a session see every project at once, which breaks per-project orientation (`/orient` + `/offload` assume one active project) and drops the privacy wall. **Organize with a container; mount per project.** Why this, and not the alternatives: `kernel/DESIGN-RATIONALE.md`.
 
 ### 6 — Verify
 - Run `/orient`. All green → project is live. Any red → fix, re-run.
+
+### 7 — Close the first session right *(first-ever project / brand-new user only)*
+A routine is only learned once it's *used* — not once it's explained. Before a new user leaves their first session, make the loop happen, don't just describe it:
+- Have them type **`/offload`** now, with you watching — so they run it once live and the muscle memory forms. Don't accept "I'll do it later."
+- Then state the whole routine in one line: *"Next time you open me, type `/orient` first — that's how I pick up where we left off. Work. Then `/offload` to save. That's the whole thing."*
+- Mention `/new-project` exists for when they want to start something new — **one sentence, don't drill it** (they just did one; more would overwhelm).
+
+Skip this step for established users creating their Nth project — they already own the loop.
 
 ---
 

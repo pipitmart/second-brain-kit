@@ -1,8 +1,7 @@
 # OFFLOAD.md — Save to the SSOT
-*Part of: ROOT v2.2 / kernel*
-*Version: 1.1 | 11 Jun 2026*
+*Part of: ROOT / kernel*
 *Scope: Kernel. Person-agnostic. The save function — persists session work into the project's Decisions Log.*
-*Triggered by: `/offload`, plus automatic prompting (below). Replaces v2.1's update-vault.*
+*Triggered by: `/offload`, plus automatic prompting (below).*
 
 > The human save function. It writes decisions and open actions into the project's **Decisions Log (the SSOT)** so nothing lives only in chat memory. Target is the Drive markdown directly — Obsidian is not involved.
 
@@ -23,6 +22,10 @@ Offload writes, so it needs write access (folder mounted + Available offline).
 - **Write ✅** → save in place.
 - **Read-only** → do **not** `create_file`. Stage the entries, tell the user, and prompt to mount. Save once access is restored.
 
+## Demo mode
+
+If the session is in demo mode (`profile/` empty + `profile-demo/` exists — see `ORIENT.md` Step 0.5): show the `🟡 DEMO MODE` banner, and **confine every write to `ROOT/profile-demo/`** — the demo Decisions Log and demo profile files only. Never touch `profile/`, the real project index, or any real project, in demo mode. Skip the mirror step and deepening (there is no real person to observe yet). Rules: `kernel/PROFILE-GENESIS.md → The DEMO branch`.
+
 ---
 
 ## What it writes
@@ -32,6 +35,8 @@ To `Decisions Log - [PROJECT].md` (via `kernel/SSOT-TEMPLATE.md` format), **edit
 - **Decisions** — newest first, each with a `*Why:*` rationale line.
 - **Open Actions** — add new next steps (small and actionable); update status; close completed ones.
 - **Parked** — anything deferred, with what it's waiting on.
+- **Session Log** — close the row `/orient` opened: fill the **end time** (user's local timezone), compute `~Hrs`, write a one-line summary of what the session did, and update the running total (`N sessions · ~H hours`). Hours are approximate — if no start time was recorded, leave `~Hrs` as `—` and count the session but not the hours. (Format + rules: `kernel/SSOT-TEMPLATE.md → Session Log`.)
+- **Header stamp (required, every offload).** Update the Decisions Log's top `**Last updated:**` line to this session's date + cont-number + a one-line summary. This line is the SSOT's **freshness stamp** — a reader (or a not-yet-synced Drive web view) compares it against the latest content to know if they're looking at a current copy. A stale stamp silently defeats that check, so it is never optional: if you wrote anything to the log this session, you bumped the stamp.
 
 It also updates the project's row in `profile/PROJECTS.md` — Status and Last session date — so the index stays a live map.
 
@@ -48,12 +53,13 @@ It also updates the project's row in `profile/PROJECTS.md` — Status and Last s
 
 ## Compaction (live → cold)
 
-When the Decisions Log passes **~250 lines**, propose compaction as part of offload:
+When the Decisions Log passes **~250 lines**, compact as part of offload — **automatically, not as a to-do:**
 
 1. Sort entries **by status, never by age**: spent (superseded decisions, Done actions, closed notes) vs standing (conventions and rules still binding — these never move).
-2. Show the user the proposed move list in plain language.
-3. On approval: relocate **verbatim** to `Archive - [PROJECT].md` (create it on first compaction), newest-first, and leave the marker in the live log: `*Compacted [date]: N entries → Archive*`.
-4. Never compact silently. Never rewrite or summarize an entry — relocation only.
+2. **Auto-relocate the clearly-spent entries verbatim** to `Archive - [PROJECT].md` (create it on first compaction), newest-first; leave the marker in the live log: `*Compacted [date]: N entries → Archive*`.
+3. **Report one line** in the closeout — `Compacted N spent entries → Archive` — so there's a trace. No approval gate.
+4. **Ask only when an entry is genuinely ambiguous** (standing-or-spent unclear — e.g. a build record whose rule may still bind): surface just those few for a quick yes/no. Never hold up the clearly-spent moves waiting on a decision.
+5. Never rewrite or summarize — relocation only. Moves are **verbatim and reversible** (the archive is one read away), which is exactly what makes auto-execution safe.
 
 The archive is the SSOT's **cold layer** — same rules (exactly one, in place, supersede-never-delete), just outside `/orient`'s read path.
 
@@ -66,7 +72,7 @@ The profile must stay a true reflection, not a curated self-image. At session cl
 - **Reflect, don't direct.** Describe what happened ("stalled at the action step after the plan was agreed"); never prescribe ("should start earlier"). The mirror records; it does not coach.
 - **Factual and dated.** Only what was actually observed in the session — no inference stacking, no psychoanalysis.
 - **Unflattering and flattering carry equal weight.** A mirror that only shows good days is a portrait.
-- **User approves each entry** before it's appended to `profile/ABOUT-ME.md → Observed Patterns` (newest first).
+- **Claude adds entries directly** to `profile/ABOUT-ME.md → Observed Patterns` (newest first) and surfaces them in the session closeout to inform Jeriel — no approval gate. The mirror is for reflection, not permission.
 - **No quota.** An unremarkable session writes nothing.
 - **Promotion:** when a pattern has appeared **3+ times**, propose folding it into the profile Baseline — user approves; supersede, never delete, if it replaces an existing trait.
 
