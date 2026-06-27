@@ -8,3 +8,7 @@ Thumbs.db
 .obsidian/
 *.tmp
 *~
+
+sync-kit.ps1
+
+.sbkit-repo

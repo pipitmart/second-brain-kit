@@ -17,8 +17,10 @@ Before loading anything, confirm Claude can actually operate:
 | Result | Meaning | Action |
 |--------|---------|--------|
 | Read ✅ + Write ✅ | Full access | Proceed to Step 1 |
-| Read ✅ + Write ❌ | Read-only (folder not mounted) | Say so. Offer to mount now. **Do not write or `create_file`** until mounted. |
+| Read ✅ + Write ❌ | Read-only — folder not mounted, **or mounted but attached read-only** (native Read works; Write/Edit fail with *"path outside the connected folder"*) | **First try `request_cowork_directory` on that folder to re-grant read-write** — this fixes the read-only-attach case, and a UI/project re-mount does *not* (it can re-attach read-only). If still blocked, the folder isn't mounted — offer to mount. **Do not `create_file`** until write works. |
 | Read ❌ | Can't reach ROOT | Stop. Drive not synced or no access — direct user to `/stress-test`. |
+
+*Note (27 Jun 2026): a Cowork folder can mount with Read working but Write/Edit blocked — it attached read-only, even though the folder is genuinely writable. `request_cowork_directory` on it re-grants write. See `CLAUDE-KERNEL.md §4`.*
 
 *Why Step 0 exists: a read-only session must never fall back to `create_file` — that re-creates the duplicate-file problem the write-path rule was built to kill.*
 
@@ -45,7 +47,7 @@ Read, in order:
 - `profile/LEARNING-ME.md` — how the user learns
 - `profile/STACK.md` — the user's tools and machines
 
-`profile/ABOUT-ME.md` (deep profile) loads on `/stress-test`, not daily. `kernel/GLOSSARY.md` is referenced on demand.
+`profile/ABOUT-ME.md` (deep profile) loads on `/stress-test`, not daily. `profile/LAB.md` (cross-project infra investigations) loads on demand — STACK's settled summary points to it when an infra issue is live. `kernel/GLOSSARY.md` is referenced on demand.
 
 ---
 
