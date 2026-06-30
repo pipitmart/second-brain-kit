@@ -86,10 +86,12 @@ Full definitions: `kernel/GLOSSARY.md`.
 |---------|-------------|
 | `/stress-test` | Instance setup check — run once on a new machine |
 | `/orient` | Session-start orientation — load ROOT + project, surface open actions |
+| `/offload` | Session-close + autosave — write the session's decisions and open actions to the SSOT; pairs with `/orient` |
 | `/new-project` | Set up a new project from a rough objective |
 | `/genesis` | Build a new user's profile — once per user; auto-runs when stress-test finds an empty profile |
 | `/help-me` | Support channel, two branches: troubleshoot a stuck system/task (snapshot → fix → restore), or walk the red-alert flow when the *person* is in a loop |
 | `/feedback` | Send a feature request or problem about SB back to the maker — Claude articulates it and hands the user one pre-filled link to submit |
+| `/review` | Independent review gate — red-team an artifact against a fixed bar (accuracy · staleness · consistency · dangling refs · clarity), grounded against real state; flags, never auto-fixes. On-demand + pre-ship release gate |
 | `/eli5` `/eli14` `/eli1` | Explain at a chosen level of simplicity |
 | `/goal` | Restate the session goal + show the learning checklist |
 
@@ -184,6 +186,7 @@ The default assumption is *it may be done*. The burden is on Claude to check, no
 | `PROFILE-GENESIS.md` | Builds a new user's profile — 3 openers, friction diagnosis, first win | ✅ built |
 | `HELP-ME.md` | Troubleshooter + red alert: task branch & person branch, red lines | ✅ built |
 | `FEEDBACK.md` | User → maker feedback loop: articulate request, pre-fill the form link | ✅ built |
+| `REVIEW.md` | Independent review gate — the 5-check bar, grounding discipline, coverage report; on-demand + pre-ship | ✅ built |
 | `TEACHING-LOOP.md` | Teaching scaffold — mastery standard, the loop, onboarding-as-teaching | ✅ built |
 | `DESIGN-RATIONALE.md` | The settled "why" behind non-obvious decisions — answers "why not X?" without relitigating | ✅ built |
 | `SKUNKWORKS-TEMPLATE.md` | Project-layer idea-inbox template — copy into a project as `Skunkworks - [PROJECT].md` when stray ideas start piling up; optional per project | ✅ built |
