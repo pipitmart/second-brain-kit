@@ -36,6 +36,15 @@
 - **(parked, not built)** Optional Todoist capture module + other branch experiments (NanoClaw, etc.) — designs banked in Project SB Skunkworks; merge into live only on passing a stated bar (per kernel §10 Preservation).
 - **(candidate)** Data-loss recovery flow (red-team 27 Jun): missing-file detection in /stress-test + /orient, recovery runbook in /help-me. See Project SB.
 
+## v0.4.1 — patch 30 Jun 2026
+**What's new since v0.4:** The kit now catches a corrupted unzip at turn one (START-HERE step 2 checks your folder structure before anything installs). The `/new-project` command no longer silently fails when creating a project folder — it now stops and tells you to create the folder in Drive first. The license has been updated from MIT to a personal-use / no-resale license. Minor fixes to the write-access recovery flow and the "it forgets" hook in START-HERE (Claude now has native memory; the pitch is updated to reflect what SB still adds on top of that).
+- **(30 Jun)** START-HERE — structure-check step added (step 2): catches ROOT-in-ROOT and loose files from a botched unzip before genesis runs.
+- **(30 Jun)** `/new-project` — folder-creation fixed: Claude stops and prompts you to create the Drive folder manually before writing any files (bash sandbox can't create Drive siblings).
+- **(29 Jun)** License — MIT replaced with personal-use / no-resale (`LICENSE.md`). Use freely for your own work; don't sell or repackage without permission.
+- **(29 Jun)** START-HERE — "it forgets" hook retired; updated to reflect Claude's native memory and what SB adds on top.
+- **(28–29 Jun)** Kernel — §11 (data integrity: never write guessed values to the SSOT) and §12 (action integrity: verify user-owned open actions before surfacing them) added.
+- **(27 Jun, post-v0.4)** Write-access fix — `kernel/CLAUDE-KERNEL.md §4` + `ORIENT.md` Step 0: Cowork can attach folders read-only; fix is `request_cowork_directory` in-session.
+
 ## v0.4 — FINAL 27 Jun 2026 — install baseline
 **What you get in v0.4 (stabilized core):** a self-contained second-brain kit — the engine (kernel) ships identical to everyone, while your personal profile and per-project decision logs stay yours, in your own Drive. Guided setup (`/stress-test`, `/genesis`) and a daily loop (`/orient`, `/offload`) that remembers your decisions and drives the next step. Live files are versionless (the version lives here), and a new Preservation rule protects your system before any change.
 *v2.3 dev opened 12 Jun 2026 immediately after the v2.2 snapshot; re-tagged SB v0.4 on 13 Jun 2026 (single-version-line switch); cut FINAL 27 Jun 2026 and committed to git as the 0.4 install baseline (the build used for Samantha + Charmain).*
