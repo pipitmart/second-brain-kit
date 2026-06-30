@@ -7,7 +7,7 @@
 - We version **releases, not edits.** The live ROOT runs ahead of the last shipped
   version; a new number is cut at a coherent feature boundary.
 - At each release cutover: snapshot the outgoing version as a header-marked archive
-  (e.g. `ROOT v2.2` stored in Project SB), bump the live header + this changelog.
+  (e.g. `ROOT v2.2` stored in Project SB), bump this changelog.
 - **From 13 Jun 2026 — one product-version line.** ROOT versioning ended at **2.3** (the
   last root tag); the system is now versioned as the **SB product number (0.4 → 1.0)**,
   and **v2.3 = the 0.4 baseline.** A parallel root-vX line was retired to avoid the
@@ -26,6 +26,7 @@
 
 ## Unreleased — SB v0.5 in development
 *0.5 = Fiverr-worthy guided product — install-friction reduction. Changes shipped in v0.4.1 are listed there; this block holds what's coming next.*
+- **(CORNERSTONE) Pan-project management / communication — cross-project signal routing.** The structural gap between a pan-project hub and a sealed project session: a signal captured in one place has no path into the project that needs to act on it, because every session mounts only ROOT + its own folder (the mount/privacy wall). Fix = a **ROOT-level intake "noticeboard"** — ROOT is mounted in every session, so it crosses the wall: the source pins a project-tagged note; the target project's `/orient` drains notes tagged for it; `/offload` moves them into the SSOT and clears them. **Kernel version must be source-agnostic** — no COS/Todoist assumption (those are Jeriel's profile overlays); a generic user routes a note from project A to project B the same way. Same mechanism as the gbrain People-net (reuse, don't fork). Surfaced 30 Jun 2026 when an SB-relevant capture (Cognee, from Keith) was filed to the COS Library and never reached an SB session. Build = `ORIENT.md` drain step + `OFFLOAD.md` clear step + `profile-templates/` skeleton; promote the design from Project SB Skunkworks into the v0.5 Backlog. *(Live dogfood running on Jeriel's profile layer: `profile/Intake-pool.md`.)*
 - **(parked, not built)** Optional Todoist capture module + other branch experiments (NanoClaw, etc.) — designs banked in Project SB Skunkworks; merge into live only on passing a stated bar (per kernel §10 Preservation).
 - **(candidate)** Data-loss recovery flow (red-team 27 Jun): missing-file detection in /stress-test + /orient, recovery runbook in /help-me. See Project SB.
 
@@ -40,9 +41,9 @@
 
 ## v0.4 — FINAL 27 Jun 2026 — install baseline
 **What you get in v0.4 (stabilized core):** a self-contained second-brain kit — the engine (kernel) ships identical to everyone, while your personal profile and per-project decision logs stay yours, in your own Drive. Guided setup (`/stress-test`, `/genesis`) and a daily loop (`/orient`, `/offload`) that remembers your decisions and drives the next step. Live files are versionless (the version lives here), and a new Preservation rule protects your system before any change.
-*v2.3 dev opened 12 Jun 2026 immediately after the v2.2 snapshot; re-tagged SB v0.4 on 13 Jun 2026 (single-version-line switch); cut FINAL 27 Jun 2026 and committed to git as the 0.4 install baseline (the build used for Samantha + Charmain).*
+*v2.3 dev opened 12 Jun 2026 immediately after the v2.2 snapshot; re-tagged SB v0.4 on 13 Jun 2026 (single-version-line switch); cut FINAL 27 Jun 2026 and committed to git as the 0.4 install baseline (the build used for Samantha — user007; Charmain, user008, receives v0.4.1).*
 - **Preservation principle added (27 Jun):** `kernel/CLAUDE-KERNEL.md` §10 — preservation as a first-class duty; ROOT is shared infra (edit it deliberately, default to the project layer); restore-point-before-merge; experiments parked + gated; the COS drift check. Thin-pointer skills read the kernel live — no `.skill` repackage needed.
-- **(cornerstone, in progress)** genesis **Demo/Live** branch: Demo = guided
+- **(cornerstone, shipped)** genesis **Demo/Live** branch: Demo = guided
   taste-first run on a sample persona in a separate demo-profile folder (never touches
   `profile/`); Live = the real once-per-user genesis. Demo doubles as a setup
   diagnostic and teaches the orient/offload loop + the /help-me reflex.
@@ -50,12 +51,12 @@
   filenames (`orient.skill`, not `orient-v2.2.skill`) — same principle as the ROOT
   folder rename: versions live in headers + this changelog, never in names. All six
   rebuilt from current sources (genesis carries the Demo/Live fork; offload the swept
-  description), round-trip verified. Old `*-v2.2.skill` files to be deleted manually.
+  description), round-trip verified. Old `*-v2.2.skill` files retired.
 - **Live docs made versionless (13 Jun):** `*Part of: ROOT vX.X*` and `*Version: ...*` lines removed from all 15 kernel + profile files — version lives in CHANGELOG only, never in file headers.
 - **Orient verifies user-owned actions (14 Jun):** `kernel/ORIENT.md` Step 3 now requires checking any user-manual open action against real state (folder contents, Settings, what's on screen) before surfacing it as pending — a step done outside Claude's visibility must not re-surface as phantom work. Kills the stale-record failure mode. Thin-pointer skills read the kernel live, so no `.skill` repackage needed.
 - **Skunkworks idea-inbox template added (25 Jun):** `kernel/SKUNKWORKS-TEMPLATE.md` — a project-layer template (copy into a project as `Skunkworks - [PROJECT].md`) for capturing raw, ungated ideas outside the SSOT's read path, keeping orient cost flat. Optional per project. `kernel/CLAUDE-KERNEL.md` file index updated; `kernel/NEW-PROJECT.md` Step 4 updated with optional skunkworks creation step.
-- **Read-only-folder write fix (27 Jun, post-FINAL):** Cowork can attach a connected folder **read-only** — native Read works but Write/Edit fail (*"path outside the connected folder"*) though the folder is genuinely writable; **fix = `request_cowork_directory` to re-grant write.** Documented in `kernel/CLAUDE-KERNEL.md §4` + operationalized in `ORIENT.md` Step 0. Install-relevant — protects the write loop on guided installs. *(Live ROOT now ahead of the git `v0.4` tag + `SB v0.4` Drive snapshot — re-zip/re-tag before the next kit send.)*
-- **(planned)** validate Demo on user004.
+- **Read-only-folder write fix (27 Jun, post-FINAL):** Cowork can attach a connected folder **read-only** — native Read works but Write/Edit fail (*"path outside the connected folder"*) though the folder is genuinely writable; **fix = `request_cowork_directory` to re-grant write.** Documented in `kernel/CLAUDE-KERNEL.md §4` + operationalized in `ORIENT.md` Step 0. Install-relevant — protects the write loop on guided installs. *(Resolved in v0.4.1.)*
+- **(done — gate not passed)** Demo validated on user004 (Victoria): scored 5.6, below threshold. Install friction addressed in v0.4.1; gate testing continues under v0.5.
 
 ## v2.2 — FINAL 12 Jun 2026 — RETIRED (snapshot archived in Project SB / `ROOT v2.2`)
 **Baseline (11 Jun):** kernel/profile split — 10 kernel files (CLAUDE-KERNEL, GLOSSARY,
