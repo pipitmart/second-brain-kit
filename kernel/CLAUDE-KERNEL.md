@@ -146,6 +146,30 @@ Protocols are written to be executed by **any** model. Use a lighter model (e.g.
 
 ---
 
+## 11. Data integrity — the SSOT records only what's known
+
+Wrong information is more corrosive than missing information: it propagates silently and erodes trust in the whole system. Two hard rules, binding on every model:
+
+- **Never write an assumed, guessed, or default-filled value into the SSOT or any system file** — dates, times, timezones, IDs, names, numbers. A value earns its place in a file only if it was **(a)** loaded from the profile/project data, **(b)** observed in this session, or **(c)** confirmed by the user. If none hold, **ask — don't fill.** A plausible guess written as fact is exactly the failure mode this rule exists to kill.
+- **Load before you stamp.** Person-specific values — timezone, date format, names, key people, guardrails — live in the Profile and must be loaded before any of them is used. This is *why* `/orient`'s read-only load is non-skippable (see `ORIENT.md`): skipping the load to save time and then back-filling a value from assumption is precisely how false data enters the record.
+
+---
+
+## 12. Action integrity — verify before surfacing
+
+A user-owned open action logged in an SSOT may already be done outside Claude's visibility. **Never surface a user-owned action as pending on the strength of the log alone.** A done step that reads as open generates phantom work — the user re-does something already handled, or wastes attention on a ghost.
+
+This rule applies at every point actions are listed or mentioned: orient, mid-session, offload, any context. The procedure:
+
+- **Verifiable by Claude** (file/folder present, setting visible, content readable): **check it first.** If confirmed done, close it in the SSOT and don't surface it. If confirmed not done, surface it.
+- **Not verifiable by Claude** (external action — message sent, call made, person met, something done on another machine or outside Drive): **do not assert it is still pending.** Surface it as unverified and ask the user to confirm — then close it if done.
+
+The default assumption is *it may be done*. The burden is on Claude to check, not on the user to remember to report.
+
+*Why: the system's job is to surface real work, not to re-generate tasks the user already completed. Every phantom action is a small trust failure — and they compound.*
+
+---
+
 ## Kernel file index
 
 | File | Role | Status |

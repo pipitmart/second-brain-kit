@@ -6,11 +6,11 @@
 
 ## Why this exists — read this before anything else
 
-Plain Claude has two gaps. **It forgets** — every new chat starts cold: you re-explain who you are, what you're building, what you decided last time. And **it waits** — it answers what you ask, then sits there; keeping the work moving is on you. Cowork gives Claude *hands* (files and tools), but only for **one session on one machine**. Close it and the memory's gone.
+Claude remembers you now — but not your *work*. Its built-in memory gives it a general sense of who you are across chats: an automatic summary, managed on Anthropic's servers, that you can't inspect, edit, or point at a specific project. What it still doesn't do: tell you what you decided last Tuesday, why you decided it, what you tried that didn't work, or what you committed to doing next. And Cowork gives Claude *hands* (files and tools), but only for **one session on one machine**.
 
-Second Brain fixes four things plain Claude and Cowork can't:
+Second Brain fills four gaps that still exist:
 
-- **It forgets you** → SB gives Claude a durable memory of you and your work — your profile, plus a decisions log for every project.
+- **Its memory is a black box** → SB puts your context in *your* Drive: your profile, your decisions, your rationale — structured, auditable, and yours to control. Nothing is summarised away or hidden from you.
 - **It's trapped on one machine** → SB lives in your Google Drive, so it's the *same brain* on every computer you sign into.
 - **Your decisions scatter across chats** → SB keeps one source of truth per project, so nothing gets re-litigated or lost.
 - **It waits to be told** → SB makes Claude *drive the work* — surfacing your next step instead of sitting idle.
@@ -18,8 +18,8 @@ Second Brain fixes four things plain Claude and Cowork can't:
 **What "drives the work" means today** (no magic, no overpromise): at the start of a session it tells you where you left off and the next open action; when a task feels too big to start, it breaks it into the one step you can take right now; when you stop, it names and saves the next step so next time begins clean.
 
 **Before and after:**
-- *Without SB:* "Hi Claude, I'm building X, last week I decided Y, the constraints are Z, where were we…" — ten minutes of re-briefing, every session, and you *still* have to work out what's next.
-- *With SB:* you type `/orient`. Claude already knows X, Y and Z, and opens with *"Here's where you left off — the next step is ___."* You're working inside the first minute.
+- *Without SB:* Claude has a vague sense of past conversations, but no idea what you decided on a specific project, why you ruled something out, or what the one thing you committed to doing next actually was. You still spend the first few minutes re-orienting — if you even remember yourself.
+- *With SB:* you type `/orient`. Claude knows exactly where you left off — the open decisions, the why behind them, and what's next. You're working inside the first minute.
 
 **Is it worth the cost?** Loading your context spends a little of Claude's budget each session — but it buys back the re-briefing, the decisions you'd otherwise lose, and the "what was I even doing?" restart tax. The bar SB is built to clear: **it must pay back more than it costs, every single session.** If it ever feels like more work than it saves, it isn't doing its job.
 
@@ -39,6 +39,8 @@ It has two halves: the **kernel** (the engine — same for everyone, you never t
 
 Your profile — your working style, your projects, your patterns — lives in **your** Google Drive and is read by **your** Claude account. It is never sent to whoever gave you this kit, never uploaded anywhere else, and the system is designed so the personal layer and the shareable layer can never mix. The person who sent you this cannot see anything you build.
 
+**Terms, briefly:** this Kit is yours to use for your own work, and you're welcome to pass it free to a friend — but it's not for resale or repackaging into a paid course or product without permission. Full terms in `LICENSE.md`.
+
 ## Setup — three steps
 
 1. **Install both apps** (Claude desktop, Google Drive desktop) and sign in to each. **Use the same Google account for both** — the account signed into Google Drive on your desktop must match the one connected to Claude (Claude → Settings → Connections → Google Drive). If they don't match, Claude opens an empty folder and nothing works. This is the single most common first-minute snag for anyone with more than one Google login.
@@ -48,18 +50,30 @@ Your profile — your working style, your projects, your patterns — lives in *
 ## The bootstrap prompt — copy everything in the box
 
 ```
-I've received a Second Brain kit (ROOT folder with kernel/, profile-templates/, and
-skills/). It's in my Google Drive and I want you to set it up for me, end to end.
+I've received a Second Brain kit (a ROOT folder with kernel/, profile-templates/,
+and skills/ inside it). It's in my Google Drive and I want you to set it up for me,
+end to end.
 
 1. Ask me to mount/select the ROOT folder if you can't see it yet.
-2. Read kernel/CLAUDE-KERNEL.md to understand the system.
-3. Walk me through installing the .skill files from the skills/ folder
+
+2. FIRST — before installing anything — check the kit arrived in one piece.
+   Open ROOT and confirm it has exactly three folders inside: kernel/,
+   profile-templates/, and skills/ — each with its files — and that ROOT isn't
+   accidentally sitting inside another ROOT folder.
+   - If it's all there: say "kit looks good" and continue.
+   - If anything is loose, missing, or doubled up: STOP. Tell me in plain words
+     what's wrong and the ONE thing to fix it (usually: delete this from Drive,
+     unzip the kit again, then drag the ROOT folder in once — don't open it,
+     don't rename it). Don't go further until I've fixed it and you've re-checked.
+
+3. Read kernel/CLAUDE-KERNEL.md to understand the system.
+4. Walk me through installing the .skill files from the skills/ folder
    (Claude Settings → Capabilities) — one at a time, tell me exactly what to click.
-4. Run the protocol in kernel/STRESS-TEST.md to verify my environment.
-5. My profile is empty — run kernel/PROFILE-GENESIS.md. Start with why this
+5. Run the protocol in kernel/STRESS-TEST.md to verify my environment.
+6. My profile is empty — run kernel/PROFILE-GENESIS.md. Start with why this
    exists, then offer me the Demo (sample data) or Live (my real profile).
    Plain language, no jargon, one thing at a time.
-6. Finish by setting up my first real project (kernel/NEW-PROJECT.md) so I leave
+7. Finish by setting up my first real project (kernel/NEW-PROJECT.md) so I leave
    this session with something working.
 
 If anything fails, use kernel/HELP-ME.md to troubleshoot it with me instead of
@@ -97,4 +111,4 @@ Your Google Drive/
 
 ---
 
-*Sending this to someone else? Send them the kit (the `.zip`) plus this message: "This sets up Claude to actually remember you and your work. You need a paid Claude plan, a Google account, and an hour. Unzip it, drag the `ROOT` folder into your Google Drive, open `START HERE`, and do what it says. Call me if you get stuck — but you probably won't need to."*
+*Sending this to a friend? (Free to pass on — just not for resale.) Send them the kit (the `.zip`) plus this message: "This gives Claude a proper memory of your work — what you decided, why, and what's next — so it can actually drive your projects instead of waiting to be told. You need a paid Claude plan, a Google account, and an hour. Unzip it, drag the `ROOT` folder into your Google Drive, open `START HERE`, and do what it says. Call me if you get stuck — but you probably won't need to."*

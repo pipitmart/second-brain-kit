@@ -7,6 +7,24 @@
 
 ---
 
+## README-first rule
+
+**Before running any step below, read the project README.** If the README defines a custom `/orient` protocol (look for a heading like `## /orient` or `## /orient — [project] protocol`), execute that protocol instead of Steps 1–6. The README is the project's authority on how orientation should work for that context — a coordination layer, a learning project, or any non-standard shape may need a different flow than a standard execution project.
+
+If no custom protocol is found, proceed with Steps 0–6 below as normal.
+
+*Rationale: `/orient` is a single command regardless of project type. The README makes it context-aware without adding new commands or user friction. Any project can override orient by documenting its protocol in its README.*
+
+---
+
+## Load-first rule — the read-only load is non-skippable
+
+A session may open with a direct question instead of a clean `/orient` — answer it, but **the read-only load (Steps 0–5) still runs in full first.** It is read-only: no writes, no approvals, no cost — and it is what puts the Profile (timezone, date format, names, key people, guardrails) and the project state into context *before* any value is used or written. **Never skip the load to jump to the answer** — a value back-filled from assumption because the Profile wasn't loaded is how false data enters the record (kernel §11).
+
+Only **Step 6** (the session-row *write*) is ever deferrable — e.g. to avoid an extra write-grant on a quick-question session. If you defer it, **say so explicitly** in the response; never drop it silently.
+
+---
+
 ## Step 0 — Access check *(do this first, every time)*
 
 Before loading anything, confirm Claude can actually operate:
@@ -69,7 +87,7 @@ Name-search for `Decisions Log - [PROJECT].md` in the project folder.
 - **Integrity check:** confirm there is **exactly one**. Flag any duplicate or `conflicted copy` immediately and ask which is canonical — do not proceed on an ambiguous SSOT.
 - Read it fully; confirm it's readable and not empty.
 - Extract all open actions.
-- **Verify user-owned actions against reality before surfacing them.** Any open action whose owner is the **user** — a manual step only they can do (upload a skill, drop a file into a folder, connect an account, flip a setting) — may already be done outside Claude's visibility. Before listing it as still-open, check actual state (folder contents via name-search/Read, what the user shows on screen, the relevant Settings). **Never surface a user-manual item as pending on the strength of the log alone:** a step that was done but logged as prose, or simply not yet closed, otherwise re-surfaces as phantom work — and the user re-does or re-builds it. When confirmed done, close it in the SSOT in this session. *(The system verifies; it does not rely on the user remembering to report.)*
+- **Verify user-owned actions against reality before surfacing them** (kernel §12). Any open action whose owner is the **user** — a manual step only they can do (upload a skill, drop a file into a folder, connect an account, flip a setting) — may already be done outside Claude's visibility. Before listing it as still-open, check actual state (folder contents via name-search/Read, what the user shows on screen, the relevant Settings). If verifiable, check it; if not verifiable, surface it as unverified and ask. When confirmed done, close it in the SSOT in this session. *(The system verifies; it does not rely on the user remembering to report.)*
 - Flag if missing, unreadable, empty, or stale (no recent updates while work is active).
 - If the log carries compaction markers, confirm `Archive - [PROJECT].md` exists (name-search). **Do not read the archive** — it is the SSOT's cold layer, loaded only on demand when history is actually needed.
 - **Gap check:** compare today against the project's Last session (in `profile/PROJECTS.md`). If the gap exceeds the profile's threshold *while Open Actions sit untouched*, ask one question — "It's been [X] days — what happened?" — and triage per `kernel/HELP-ME.md` Branch B. Benign answer (trip, rest, life): log one line, move on. Loaded answer: shift to the red-alert flow before starting work.

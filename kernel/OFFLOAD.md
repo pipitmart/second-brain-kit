@@ -46,7 +46,7 @@ It also updates the project's row in `profile/PROJECTS.md` — Status and Last s
 
 - **Supersede, never delete.** If the session reversed an earlier decision, do not erase it — mark it `superseded [date]` and add the new decision. The log is an audit trail; the reasoning history matters.
 - **Edit in place.** Never re-create the log (that spawns a duplicate and breaks the SSOT).
-- **Only log what was actually decided.** No fabrication, no inferred decisions.
+- **Only log what was actually decided.** No fabrication, no inferred decisions — **and no assumed or default-filled values** (times, timezones, IDs, dates, names). Every value written traces to loaded profile/project data, this session's observation, or the user. If a needed value isn't known, **ask before writing** — never stamp a guess. (Kernel §11.)
 - **Exactly one log per project.** If a duplicate or conflicted copy appears, flag it before writing.
 
 ---

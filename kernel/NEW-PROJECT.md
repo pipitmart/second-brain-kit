@@ -41,7 +41,13 @@
 
 ### 0 — Access + instance gate
 - Has this machine passed `/stress-test`? If never set up → run it first.
-- Are **both** the target project folder **and ROOT** mounted for write access? If not → have the user mount them. *(This is `/orient`'s Step 0, applied before building. ROOT must be writable too — the build registers the project in `profile/PROJECTS.md`, a ROOT write.)*
+- ROOT must be mounted and writable — the build registers the project in `profile/PROJECTS.md`, a ROOT write.
+- **Project folder — two cases (decide before building):**
+  - **Folder already exists in Drive:** mount it alongside ROOT, confirm write access, proceed.
+  - **Folder doesn't exist yet:** determine where it will live.
+    - **Sibling of ROOT** (standard case — a new top-level project under `Brain/`): Claude cannot create this folder. **Stop here and prompt the user:** *"I can't create a Drive folder that's a sibling of ROOT — the parent (`Brain/`) isn't mounted. Please create `Brain/[Project Name]/` manually in Drive now, then add it to this Cowork project's folder connections alongside ROOT. Tell me when it's done."* Wait for confirmation, then verify the mount is live before proceeding.
+    - **Child of an already-mounted folder** (e.g. a sub-project inside a mounted container like `SCX Digital/`): Claude can create it via bash (`mkdir` on the mounted path). Proceed.
+- Never start building files until the folder exists in Drive and is mounted with write access.
 
 ### 1 — Carry prior context
 - Name-search for any existing Decisions Log in the likely folder. If found, read it and carry decisions + open actions forward. Flag old naming for rename.
@@ -62,7 +68,7 @@ Probe until it's concrete and actionable:
 - Stress-test before showing the user: contradictions with global conventions? missing key people / scope / constraints? correct Decisions Log naming? Fix the gaps first.
 
 ### 4 — Build it *(Claude executes, user approves)*
-- Create the project folder (if new) **as a sibling of ROOT — alongside it in Drive, never inside the ROOT folder** (Hard rule 3).
+- By this point the project folder already exists in Drive and is mounted (Step 0 guaranteed this). **Do not attempt to create it here.** If somehow it's still missing, stop and return to Step 0.
 - Create `README-[PROJECT].md` — instructions, folder location, key people, constraints.
 - Create `Decisions Log - [PROJECT].md` from `kernel/SSOT-TEMPLATE.md`.
 - Seed Open Actions with the session's small, concrete next steps.
