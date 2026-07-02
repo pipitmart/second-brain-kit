@@ -23,7 +23,7 @@
 - Folder + `README-[PROJECT].md` + `Decisions Log - [PROJECT].md` exist — correctly named, **exactly one each**.
 - README carries: objective, folder location, key people, constraints, priorities, conventions, **and the project's red line** — and **no live action list**. Open actions, decisions, and status live only in the Decisions Log; the README is the charter and changes only when the charter does.
 - Decisions Log seeded with the session's **small, concrete next actions** in Open Actions.
-- Project registered in `profile/PROJECTS.md`.
+- Project registered in `profile/PROJECTS.md` — including a unique `Noticeboard tag` (without one, cross-project notes can never route to this project).
 - `/orient` runs green — no contradictions, SSOT singular, key people known.
 
 ---
@@ -72,7 +72,7 @@ Probe until it's concrete and actionable:
 - Create `README-[PROJECT].md` — instructions, folder location, key people, constraints.
 - Create `Decisions Log - [PROJECT].md` from `kernel/SSOT-TEMPLATE.md`.
 - Seed Open Actions with the session's small, concrete next steps.
-- **Register the project in `profile/PROJECTS.md`** — add its row (folder, SSOT, status Active).
+- **Register the project in `profile/PROJECTS.md`** — add its row (folder, SSOT, status Active, **and a `Noticeboard tag`**: unique, kebab-case, derived once from the project name at creation (e.g. `#my-project`) then **stored** — routing never re-derives it, so a later rename can't break a pinned note. Check it collides with no existing row's tag).
 - **Optionally create `Skunkworks - [PROJECT].md`** from `kernel/SKUNKWORKS-TEMPLATE.md` — only when the project is likely to generate more ideas than its roadmap/backlog should hold. Skip for narrow, well-scoped projects.
 
 ### 5 — Wire Cowork *(Drive branch only)*

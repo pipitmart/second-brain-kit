@@ -41,7 +41,9 @@ Your profile — your working style, your projects, your patterns — lives in *
 
 **Terms, briefly:** this Kit is yours to use for your own work, and you're welcome to pass it free to a friend — but it's not for resale or repackaging into a paid course or product without permission. Full terms in `LICENSE.md`.
 
-## Setup — three steps
+## Setup — pre-flight first, then three steps
+
+**0. Clear `PRE-FLIGHT.md` first** — four things checked with your own eyes (about ten minutes). It removes the snags that eat the first twenty minutes of most setups. Come back here when all four boxes are ticked.
 
 1. **Install both apps** (Claude desktop, Google Drive desktop) and sign in to each. **Use the same Google account for both** — the account signed into Google Drive on your desktop must match the one connected to Claude (Claude → Settings → Connections → Google Drive). If they don't match, Claude opens an empty folder and nothing works. This is the single most common first-minute snag for anyone with more than one Google login.
 2. **Get the kit into your Google Drive.** It comes as a **`.zip`**. Unzip it, then **drag the unzipped `ROOT` folder into your Google Drive on your computer** — the folder the Google Drive app shows on your machine (on Windows that's usually `G:\My Drive`; on Mac, `Google Drive` in Finder). *Don't try to "copy" a folder inside the Google Drive website — Drive can't copy folders cleanly, and that's where most people get stuck. Unzip-and-drag is the reliable way.* You don't need to download your whole Drive or change any settings — the system runs fine on normal streaming.
@@ -65,6 +67,12 @@ end to end.
      what's wrong and the ONE thing to fix it (usually: delete this from Drive,
      unzip the kit again, then drag the ROOT folder in once — don't open it,
      don't rename it). Don't go further until I've fixed it and you've re-checked.
+   - If ROOT reads as EMPTY or can't be found at all: the most likely cause is
+     that Google Drive on this computer and Claude's Google Drive connector are
+     signed into DIFFERENT Google accounts. Say exactly that, in plain words,
+     and walk me through checking both emails (Drive icon on my computer, and
+     Claude Settings -> Connectors -> Google Drive) before trying anything else.
+     Don't treat this as a broken kit - it's almost always the account.
 
 3. Read kernel/CLAUDE-KERNEL.md to understand the system.
 4. Walk me through installing the .skill files from the skills/ folder

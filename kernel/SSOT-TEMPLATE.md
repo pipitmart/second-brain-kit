@@ -92,5 +92,5 @@ A countable record of every session on the project: how many, roughly how many h
 | Protocol | Action |
 |----------|--------|
 | `/new-project` | Creates it from this template, seeds Open Actions with the session's next steps |
-| `/orient` | Reads it; verifies exactly one; surfaces Open Actions; **opens a Session Log row (start time) and shows the running total** |
+| `/orient` | Reads it; verifies exactly one; surfaces Open Actions; appends any `[from Noticeboard]` rows drained by Step 2.5; **opens a Session Log row (start time) and shows the running total** |
 | `/offload` | Appends decisions and updates Open Actions in place; **closes the Session Log row (end time, ~hrs, summary) and updates the total**; auto-compacts (one-line notice, asks only on ambiguity) when the live log passes ~250 lines |

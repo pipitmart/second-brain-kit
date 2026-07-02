@@ -7,9 +7,9 @@
 
 ## Active
 
-| Project | Drive folder | Folder ID *(convenience)* | SSOT | Status | Last session | Notes |
-|---------|--------------|---------------------------|------|--------|--------------|-------|
-| [first project — added by /new-project] | | | | Active | | |
+| Project | Drive folder | Folder ID *(convenience)* | Noticeboard tag | SSOT | Status | Last session | Notes |
+|---------|--------------|---------------------------|-----------------|------|--------|--------------|-------|
+| [first project — added by /new-project] | | | | | Active | | |
 
 ## Paused / Closed
 
@@ -19,4 +19,5 @@
 - **Machine-agnostic:** every machine sees the same full list; what differs is which folders are mounted. Never record machine state here.
 - **Name is canonical; the ID is convenience.** If they disagree, trust name-search and fix the row.
 - `/new-project` adds rows · `/offload` updates Status + Last session · `/orient` flags ghost rows and unregistered projects.
+- **`Noticeboard tag` is stored, never derived** — one unique kebab-case tag per project (e.g. `#my-project`), assigned at `/new-project`, used by `profile/Noticeboard.md` routing (`/orient` Step 2.5 drain · `/offload` pin). Stored explicitly so a rename never breaks a pinned note.
 - Status vocabulary: Active · Paused · Closed (with close date).

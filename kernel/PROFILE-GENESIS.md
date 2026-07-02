@@ -11,7 +11,7 @@
 
 Before asking the user anything, answer the question **they** are silently asking: *"why am I spending time on this?"* Plainly, in two or three sentences, no jargon:
 
-> Plain Claude has three holes. **It forgets** — every new chat starts from zero. **It's stuck to one computer** — nothing follows you. **Decisions scatter** — what you agreed last week lives in some chat you'll never find. This system fixes all three: Claude keeps a memory of who you are and what you decided, it lives in your Drive so it follows you everywhere, and every project gets one trusted page where decisions go to *live*, not die.
+> Claude remembers you now — a general sense of who you are, auto-summarized across chats. But that memory is a black box: you can't inspect it, point it at a specific project, or trust it with what you decided and why. **It's also stuck to whatever's in that auto-summary** — no structured record, nothing that follows you the same way to another computer. **Decisions still scatter** — what you agreed last week lives in some chat you'll never find. This system fixes that: it puts your context in *your* Drive — structured, auditable, yours to control — so it's the same brain on every machine, and every project gets one trusted page where decisions go to *live*, not die.
 
 If the user asks "isn't this just a skill?" (they will): *the skills are thin switches — the value is the memory and structure they switch on. Remove the Drive layer and the skills have nothing to point at.* One-line positioning if useful: **"Cowork gives Claude hands for one session on one machine. This gives it memory and continuity across every session, machine, and project."**
 
@@ -29,7 +29,7 @@ If the user asks "isn't this just a skill?" (they will): *the skills are thin sw
 
 **What it is:** a guided ten-minute run of the real system on a fictional persona, so a brand-new user *feels* the value before investing anything. It is also a quiet diagnostic: every beat exercises one fragile piece of their setup (skills fire, ROOT readable, write path works) while Claude is watching — failures surface here, guided, not three days later, alone.
 
-**The one moment that matters:** Claude remembering across a chat boundary. That is the single thing plain Claude visibly cannot do. Every beat exists to set up that moment; never cut it for time.
+**The one moment that matters:** Claude picking up a *specific, structured decision* across a chat boundary — not a vague auto-summary, but the exact thing you decided and why, ready to act on. That is what plain Claude's built-in memory visibly cannot do. Every beat exists to set up that moment; never cut it for time.
 
 ### Hard guardrails (sandbox by location)
 
@@ -115,7 +115,7 @@ Timezone · date format · tools they actually use (and which are connected) · 
 ## Phase 5 — Write, read back, tag
 
 0. **If `profile-demo/` exists, delete it now** (or have the user drag it to trash) — Live begins clean; demo data must never linger beside a real profile.
-1. Draft the profile files **live, during the call**, copying from `profile-templates/` into `profile/` and filling them in: `PROFILE.md` (style, guardrails, anchor), `ABOUT-ME.md` (thin baseline + empty Observed Patterns section), `PROJECTS.md` (empty registry), `STACK.md`, `LEARNING-ME.md` (kernel default; refined by observation later), `LAB.md` (copied **blank** — the system-lab log fills only when the first cross-project infra issue appears).
+1. Draft the profile files **live, during the call**, copying from `profile-templates/` into `profile/` and filling them in: `PROFILE.md` (style, guardrails, anchor), `ABOUT-ME.md` (thin baseline + empty Observed Patterns section), `PROJECTS.md` (empty registry), `STACK.md`, `LEARNING-ME.md` (kernel default; refined by observation later), `LAB.md` (copied **blank** — the system-lab log fills only when the first cross-project infra issue appears), `Noticeboard.md` (copied **blank** — the cross-project channel; fills the first time one project pins a note for another).
 2. **Read the profile back**: "Here's what I heard — true?" Corrections in their words beat drafts in Claude's.
 3. **Tag every genesis entry** `*(self-reported, [date])*`. The mirror's observed entries outrank self-report: **when observation contradicts a self-reported trait, observation wins** — propose the correction to the user.
 4. **Set the expectation:** tell the user, plainly — *"Your profile starts thin on purpose. As we work, I'll occasionally ask one deeper question when something happens that's worth understanding. Answer honestly and the system gets better at working with you."* Genesis data is the lowest grade the system will ever hold; everything after is upgrade (`OFFLOAD.md → Deepening`).

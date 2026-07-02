@@ -7,7 +7,7 @@
 - We version **releases, not edits.** The live ROOT runs ahead of the last shipped
   version; a new number is cut at a coherent feature boundary.
 - At each release cutover: snapshot the outgoing version as a header-marked archive
-  (e.g. `ROOT v2.2` stored in Project SB), bump this changelog.
+  (e.g. `ROOT v2.2` stored in Project SB), bump the live header + this changelog.
 - **From 13 Jun 2026 — one product-version line.** ROOT versioning ended at **2.3** (the
   last root tag); the system is now versioned as the **SB product number (0.4 → 1.0)**,
   and **v2.3 = the 0.4 baseline.** A parallel root-vX line was retired to avoid the
@@ -24,27 +24,38 @@
 
 ---
 
-## Unreleased — SB v0.5 in development
-*0.5 = Fiverr-worthy guided product — install-friction reduction. Changes shipped in v0.4.1 are listed there; this block holds what's coming next.*
-- **(CORNERSTONE) Pan-project management / communication — cross-project signal routing.** The structural gap between a pan-project hub and a sealed project session: a signal captured in one place has no path into the project that needs to act on it, because every session mounts only ROOT + its own folder (the mount/privacy wall). Fix = a **ROOT-level intake "noticeboard"** — ROOT is mounted in every session, so it crosses the wall: the source pins a project-tagged note; the target project's `/orient` drains notes tagged for it; `/offload` moves them into the SSOT and clears them. **Kernel version must be source-agnostic** — no COS/Todoist assumption (those are Jeriel's profile overlays); a generic user routes a note from project A to project B the same way. Same mechanism as the gbrain People-net (reuse, don't fork). Surfaced 30 Jun 2026 when an SB-relevant capture (Cognee, from Keith) was filed to the COS Library and never reached an SB session. Build = `ORIENT.md` drain step + `OFFLOAD.md` clear step + `profile-templates/` skeleton. **Promoted to the v0.5 Backlog 1 Jul 2026; build pending.** *(Live dogfood running on Jeriel's profile layer: `profile/Noticeboard.md` — first end-to-end drain-by-hand ran 1 Jul.)*
-- **(v0.5 · BUILT 1 Jul 2026) Kernel `/review` — independent reviewer / red-team gate.** Built as `kernel/REVIEW.md` + `review.skill`, wired into §6 commands + the kernel file index. A shipped command that runs *inside* a project session and red-teams an artifact against a fixed bar: factual accuracy (vs real state, not the doc's own claims), no staleness, internal + cross-doc consistency, no dangling references / stranded to-dos, communication clarity. Grounds every check against ground truth (Drive/git/sibling SSOTs); reports coverage + what it couldn't verify (never a blanket "all clear"); flags, doesn't auto-rewrite. Runs on-demand and as a **pre-ship gate** before a git/kit release (the maker can't reliably check its own work). Converges with the loop maker/checker (critic) item — don't fork. Profile-layer counterpart: COS runs the cross-project pass on-demand + at `/close`. Surfaced 30 Jun 2026 (stale SB-kit CHANGELOG); **first dogfood pass 1 Jul caught `/offload` missing from the §6 commands table — fixed.**
-- **(parked, not built)** Optional Todoist capture module + other branch experiments (NanoClaw, etc.) — designs banked in Project SB Skunkworks; merge into live only on passing a stated bar (per kernel §10 Preservation).
-- **(candidate)** Data-loss recovery flow (red-team 27 Jun): missing-file detection in /stress-test + /orient, recovery runbook in /help-me. See Project SB.
+## Unreleased — SB v0.6 in development
+*0.6 = updates + recovery — forward: update/safety channel · improvement: stronger `/help-me`.*
+
+## v0.5 — FINAL 02 Jul 2026 — release well on git
+**What's new in v0.5:** a pre-flight checklist catches setup snags before they cost you; clearer help when Drive accounts don't match; notes now route between your projects automatically — plus the new `/review` and `/grill-me` commands.
+- **(0.5-2)** `PRE-FLIGHT.md` added to kit ROOT — four pre-install checks (paid Claude desktop app, Drive for Desktop syncing, same Google account, kit unzipped) — with a new step 0 in `START-HERE.md` pointing to it.
+- **(0.5-3)** Bootstrap prompt (`START-HERE.md` step 2) now names account mismatch as the first thing to check when ROOT reads empty or can't be found.
+- **(0.5-5)** Thin front-door README added to the GitHub repo; `START-HERE.md` remains the kit's own front door (ROOT carries no README by design).
+- **(0.5-6)** Star CTA added to the install call-close script and the post-install follow-up.
+- **Cross-project Noticeboard routing (cornerstone):** project-tagged notes pinned to `profile/Noticeboard.md` now route automatically — `/orient` (new Step 2.5) drains notes tagged for the active project into its Decisions Log; `/offload` pins outgoing notes; new `Noticeboard tag` column in `PROJECTS.md` (live + template); tags assigned at `/new-project`; blank board template copied in at genesis.
+- **New command `/grill-me`** (`kernel/GRILL-ME.md` + skill): branch-by-branch design interview before a build — one question at a time, each with a recommended answer. Adapted from Matt Pocock's `grilling` skill.
+- **New command `/review`** (`kernel/REVIEW.md` + skill): independent review gate — checks an artifact against real state (accuracy, staleness, consistency, dangling references, clarity); runs on demand and before every release.
+- **`/orient` freshness gate (new Step 0.6):** local files are verified against the cloud before anything is trusted or written; `/offload` re-checks before each write and confirms every write landed.
+- **`PROFILE-GENESIS.md`** positioning updated to match `START-HERE.md` — acknowledges Claude's native memory, pitches what SB adds on top.
+- **`/offload` cross-project learnings reworked — route, don't write:** reusable learnings now route via the Noticeboard (or `profile/LAB.md` for system/infra findings) instead of being written directly into `profile/`, `STACK`, or the kernel from a project session.
 
 ## v0.4.1 — patch 30 Jun 2026
 **What's new since v0.4:** The kit now catches a corrupted unzip at turn one (START-HERE step 2 checks your folder structure before anything installs). The `/new-project` command no longer silently fails when creating a project folder — it now stops and tells you to create the folder in Drive first. The license has been updated from MIT to a personal-use / no-resale license. Minor fixes to the write-access recovery flow and the "it forgets" hook in START-HERE (Claude now has native memory; the pitch is updated to reflect what SB still adds on top of that).
 - **(30 Jun)** START-HERE — structure-check step added (step 2): catches ROOT-in-ROOT and loose files from a botched unzip before genesis runs.
-- **(30 Jun)** `/new-project` — folder-creation fixed: Claude stops and prompts you to create the Drive folder manually before writing any files (bash sandbox can't create Drive siblings).
-- **(29 Jun)** License — MIT replaced with personal-use / no-resale (`LICENSE.md`). Use freely for your own work; don't sell or repackage without permission.
+- **(30 Jun)** `/new-project` — folder-creation fixed: Claude stops and prompts you to create the Drive folder manually before writing any files (bash sandbox can't create Drive siblings). *(Verified 01 Jul: this fix is live in `kernel/NEW-PROJECT.md` Step 0 — matches git exactly. Only this CHANGELOG line was missing on the Drive side; the actual fix was never lost.)*
+- **(29 Jun)** License — MIT replaced with personal-use / no-resale (`LICENSE.md`). Use freely for your own work; don't sell or repackage without permission. **Git repo LICENSE swapped MIT → `LICENSE.md` (30 Jun 2026) — repo no longer licenses MIT.**
 - **(29 Jun)** START-HERE — "it forgets" hook retired; updated to reflect Claude's native memory and what SB adds on top.
 - **(28–29 Jun)** Kernel — §11 (data integrity: never write guessed values to the SSOT) and §12 (action integrity: verify user-owned open actions before surfacing them) added.
 - **(27 Jun, post-v0.4)** Write-access fix — `kernel/CLAUDE-KERNEL.md §4` + `ORIENT.md` Step 0: Cowork can attach folders read-only; fix is `request_cowork_directory` in-session.
 
+*(Corrected 01 Jul 2026: this release-cut existed in git (`pipitmart/second-brain-kit`, committed 30 Jun) but was never applied to this file — the Drive-side CHANGELOG still had every v0.4.1 item sitting under "Unreleased" as if the version had never shipped. Caught only by a direct git cross-check; the reconstruction earlier the same day, based on Drive artifacts alone, missed it. See `profile/LAB.md`.)*
+
 ## v0.4 — FINAL 27 Jun 2026 — install baseline
 **What you get in v0.4 (stabilized core):** a self-contained second-brain kit — the engine (kernel) ships identical to everyone, while your personal profile and per-project decision logs stay yours, in your own Drive. Guided setup (`/stress-test`, `/genesis`) and a daily loop (`/orient`, `/offload`) that remembers your decisions and drives the next step. Live files are versionless (the version lives here), and a new Preservation rule protects your system before any change.
-*v2.3 dev opened 12 Jun 2026 immediately after the v2.2 snapshot; re-tagged SB v0.4 on 13 Jun 2026 (single-version-line switch); cut FINAL 27 Jun 2026 and committed to git as the 0.4 install baseline (the build used for Samantha — user007; Charmain, user008, receives v0.4.1).*
+*v2.3 dev opened 12 Jun 2026 immediately after the v2.2 snapshot; re-tagged SB v0.4 on 13 Jun 2026 (single-version-line switch); cut FINAL 27 Jun 2026 and committed to git as the 0.4 install baseline (the build shipped to user007; user008 onward receive v0.4.1).*
 - **Preservation principle added (27 Jun):** `kernel/CLAUDE-KERNEL.md` §10 — preservation as a first-class duty; ROOT is shared infra (edit it deliberately, default to the project layer); restore-point-before-merge; experiments parked + gated; the COS drift check. Thin-pointer skills read the kernel live — no `.skill` repackage needed.
-- **(cornerstone, shipped)** genesis **Demo/Live** branch: Demo = guided
+- **(cornerstone, in progress)** genesis **Demo/Live** branch: Demo = guided
   taste-first run on a sample persona in a separate demo-profile folder (never touches
   `profile/`); Live = the real once-per-user genesis. Demo doubles as a setup
   diagnostic and teaches the orient/offload loop + the /help-me reflex.
@@ -57,7 +68,7 @@
 - **Orient verifies user-owned actions (14 Jun):** `kernel/ORIENT.md` Step 3 now requires checking any user-manual open action against real state (folder contents, Settings, what's on screen) before surfacing it as pending — a step done outside Claude's visibility must not re-surface as phantom work. Kills the stale-record failure mode. Thin-pointer skills read the kernel live, so no `.skill` repackage needed.
 - **Skunkworks idea-inbox template added (25 Jun):** `kernel/SKUNKWORKS-TEMPLATE.md` — a project-layer template (copy into a project as `Skunkworks - [PROJECT].md`) for capturing raw, ungated ideas outside the SSOT's read path, keeping orient cost flat. Optional per project. `kernel/CLAUDE-KERNEL.md` file index updated; `kernel/NEW-PROJECT.md` Step 4 updated with optional skunkworks creation step.
 - **Read-only-folder write fix (27 Jun, post-FINAL):** Cowork can attach a connected folder **read-only** — native Read works but Write/Edit fail (*"path outside the connected folder"*) though the folder is genuinely writable; **fix = `request_cowork_directory` to re-grant write.** Documented in `kernel/CLAUDE-KERNEL.md §4` + operationalized in `ORIENT.md` Step 0. Install-relevant — protects the write loop on guided installs. *(Resolved in v0.4.1.)*
-- **(done — gate not passed)** Demo validated on user004 (Victoria): scored 5.6, below threshold. Install friction addressed in v0.4.1; gate testing continues under v0.5.
+- **(done — gate not passed)** Demo validated on user004: scored 5.6, below threshold. Install friction addressed in v0.4.1; gate testing continues under v0.5.
 
 ## v2.2 — FINAL 12 Jun 2026 — RETIRED (snapshot archived in Project SB / `ROOT v2.2`)
 **Baseline (11 Jun):** kernel/profile split — 10 kernel files (CLAUDE-KERNEL, GLOSSARY,

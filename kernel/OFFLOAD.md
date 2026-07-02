@@ -22,6 +22,18 @@ Offload writes, so it needs write access (folder mounted + Available offline).
 - **Write ✅** → save in place.
 - **Read-only** → do **not** `create_file`. Stage the entries, tell the user, and prompt to mount. Save once access is restored.
 
+## Freshness gate *(built 01 Jul 2026, hardened same day — pairs with `ORIENT.md` Step 0.6)*
+
+Sync state can change mid-session, so the freshness check `/orient` ran at Step 0.6 is **not** assumed to still hold at offload — re-run it **for every file about to be written**, immediately before that write (not just the SSOT):
+1. Re-compare the target file's cloud `modifiedTime` (primary, machine-comparable signal) against what was last read. The header-stamp text is a human cross-check only, never the primary comparison.
+2. If the cloud moved ahead during the session (another machine wrote in the meantime) → **STALE.** Stop, tell the user, do not write on top of it — reconcile first (surface the cloud's newer content; don't silently overwrite).
+3. **If the Drive-API check itself fails** (can't reach `get_file_metadata`) → treat as STALE, not fresh. Never write on the assumption that "couldn't check" means "must be fine."
+4. If fresh → proceed to write as normal.
+
+**After writing, confirm it landed:** re-read the file's cloud `modifiedTime`/header stamp via the Drive API and verify it reflects the change just made. **If the confirm fails** (cloud still shows the old state) — retry the write once; if it still doesn't land, **stop and tell the user explicitly** ("the write to [file] may not have persisted — check it manually before trusting it next session"). Never report a session as offloaded cleanly while a write is unconfirmed.
+
+*Why: the 01 Jul 2026 staleness incident lost two sessions' worth of Decisions Log narrative between a write on one machine and a read on another, and it was never confirmed whether the write itself failed to persist or was simply never made. The first version of this fix (same day) was itself found to only cover two files when the incident had corrupted eight — hardened same session after a `/review` pass. Full incident: `profile/LAB.md`.*
+
 ## Demo mode
 
 If the session is in demo mode (`profile/` empty + `profile-demo/` exists — see `ORIENT.md` Step 0.5): show the `🟡 DEMO MODE` banner, and **confine every write to `ROOT/profile-demo/`** — the demo Decisions Log and demo profile files only. Never touch `profile/`, the real project index, or any real project, in demo mode. Skip the mirror step and deepening (there is no real person to observe yet). Rules: `kernel/PROFILE-GENESIS.md → The DEMO branch`.
@@ -39,6 +51,20 @@ To `Decisions Log - [PROJECT].md` (via `kernel/SSOT-TEMPLATE.md` format), **edit
 - **Header stamp (required, every offload).** Update the Decisions Log's top `**Last updated:**` line to this session's date + cont-number + a one-line summary. This line is the SSOT's **freshness stamp** — a reader (or a not-yet-synced Drive web view) compares it against the latest content to know if they're looking at a current copy. A stale stamp silently defeats that check, so it is never optional: if you wrote anything to the log this session, you bumped the stamp.
 
 It also updates the project's row in `profile/PROJECTS.md` — Status and Last session date — so the index stays a live map.
+
+---
+
+## Noticeboard pin — cross-project actions *(built 02 Jul 2026, pairs with `ORIENT.md` Step 2.5)*
+
+If the session produced an action or decision **another project must act on**, never let it travel by memory or a verbal handoff — pin it to `profile/Noticeboard.md` (ROOT — the always-writable anchor) as part of offload:
+
+- **Format, one note per line:** `- [DD Mon YYYY] #project-tag — note — source — status`. Terse — the note is a pointer; the full substance stays logged in **this** project's SSOT.
+- **The tag comes from the target project's `Noticeboard tag` column in `profile/PROJECTS.md`** — stored, never guessed from the project name. No row or no tag → ask, don't invent (kernel §11).
+- **One tag per line.** A note for N projects = N lines, one per target. *(The drain hard-deletes whole lines — a shared line would vanish for the second project the moment the first drains it.)*
+- **Freshness-check `Noticeboard.md` immediately before the write** — same rule as every other offload write (above).
+- The target's `/orient` Step 2.5 does the rest: appends to their SSOT `[from Noticeboard]`, confirms, deletes the line. The board is a channel, not a record — it stays short by design.
+
+*Why: cross-project closes that traveled by memory have already failed silently (30 Jun 2026 — a git-LICENSE close never reached the SB record and re-surfaced as phantom work). The pin is the single write channel that crosses the mount/privacy wall.*
 
 ---
 
@@ -72,7 +98,7 @@ The profile must stay a true reflection, not a curated self-image. At session cl
 - **Reflect, don't direct.** Describe what happened ("stalled at the action step after the plan was agreed"); never prescribe ("should start earlier"). The mirror records; it does not coach.
 - **Factual and dated.** Only what was actually observed in the session — no inference stacking, no psychoanalysis.
 - **Unflattering and flattering carry equal weight.** A mirror that only shows good days is a portrait.
-- **Claude adds entries directly** to `profile/ABOUT-ME.md → Observed Patterns` (newest first) and surfaces them in the session closeout to inform Jeriel — no approval gate. The mirror is for reflection, not permission.
+- **Claude adds entries directly** to `profile/ABOUT-ME.md → Observed Patterns` (newest first) and surfaces them in the session closeout to inform the user — no approval gate. The mirror is for reflection, not permission.
 - **No quota.** An unremarkable session writes nothing.
 - **Promotion:** when a pattern has appeared **3+ times**, propose folding it into the profile Baseline — user approves; supersede, never delete, if it replaces an existing trait.
 
@@ -90,9 +116,14 @@ Rules: **one question, never a battery; only when an event earned it; never cold
 
 ---
 
-## Cross-project learnings
+## Cross-project learnings — route, don't write *(reworked 02 Jul 2026 — supersedes the propose-upward rule)*
 
-If the session produced something reusable beyond this project (a convention, a fix, a pattern), surface it as a candidate to promote upward — to `profile/`, `STACK`, or the kernel. **Propose; don't auto-write to global without confirmation.** This is the loop that lets the system adapt as projects come and go.
+If the session produced something reusable beyond this project (a convention, a fix, a pattern), **do not write it into `profile/`, `STACK`, or the kernel from here** — ROOT-layer edits are deliberate system maintenance (kernel §10), never a side effect of ordinary project work. Route it instead:
+
+- **System/infra investigation** (sync, mounts, write path, connectors, platform quirks) → log it in `profile/LAB.md`, its designed home. `STACK` carries only the settled summary.
+- **Everything else** → pin it to the Noticeboard (section above), tagged for the project that owns that kind of change. No owning project in `profile/PROJECTS.md` → park it as a candidate in **this** project's SSOT and say so — never invent a tag (kernel §11).
+
+The promotion itself happens in the owning project's own session, gated as usual. One channel crosses the mount wall; this section no longer grants a second. *(The mirror, deepening answers, and the `PROJECTS.md` row update are person-layer / structural writes with their own designed pipelines — they are not cross-project information and stay as they are.)*
 
 ---
 

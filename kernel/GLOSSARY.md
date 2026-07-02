@@ -32,6 +32,8 @@
 
 **Project Index** — `profile/PROJECTS.md`. The registry of all your projects: one row each, with folder, Decisions Log name, and status. *Why it matters:* it's the map. A fresh session or new machine reads it to know what projects exist and where they live — without it, projects are only discoverable by memory. It is machine-agnostic: every machine sees the same full list; what differs per machine is which folders are mounted.
 
+**Noticeboard** — `profile/Noticeboard.md`. The shared cross-project channel. Sessions see only ROOT + their own project folder, so a note meant for another project is pinned here (project-tagged, at `/offload`) and drained by that project's next `/orient` (Step 2.5) into its own Decisions Log, then deleted. One tag per line; tags live in the Project Index's `Noticeboard tag` column. *Why it matters:* it's the only path a signal has across the mount/privacy wall — without it, cross-project actions travel by memory and get silently lost.
+
 **Live / Cold (SSOT layers)** — The SSOT is one truth in two layers. **Live** is the Decisions Log: open actions, standing decisions, recent history — read every session. **Cold** is the Archive: spent history read only on demand. *Why it matters:* keeps daily orientation fast without ever deleting the reasoning trail.
 
 **Archive** — `Archive - [PROJECT].md`. The cold layer of a project's SSOT: superseded decisions, completed actions, closed notes — moved there verbatim by compaction. Created on first compaction, not at setup. *Why it matters:* history is preserved in full, but stops costing attention every session.

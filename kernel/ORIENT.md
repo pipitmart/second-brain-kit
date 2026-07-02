@@ -11,6 +11,8 @@
 
 **Before running any step below, read the project README.** If the README defines a custom `/orient` protocol (look for a heading like `## /orient` or `## /orient — [project] protocol`), execute that protocol instead of Steps 1–6. The README is the project's authority on how orientation should work for that context — a coordination layer, a learning project, or any non-standard shape may need a different flow than a standard execution project.
 
+**The gates are non-overridable.** A custom protocol replaces *what gets loaded and surfaced* (Steps 1–6), never the safety and routing sub-steps: **Step 0 (access), Step 0.5 (demo), Step 0.6 (freshness), and Step 2.5 (Noticeboard drain) run in every orientation, custom or standard.** A custom protocol runs the drain against its own SSOT. *(Why named explicitly: the drain sits at Step 2.5, inside the replaceable range — without this rule, any project with a custom orient silently never drains its notes, and the cross-project channel fails for exactly the coordination-layer projects most likely to depend on it.)*
+
 If no custom protocol is found, proceed with Steps 0–6 below as normal.
 
 *Rationale: `/orient` is a single command regardless of project type. The README makes it context-aware without adding new commands or user friction. Any project can override orient by documenting its protocol in its README.*
@@ -19,7 +21,7 @@ If no custom protocol is found, proceed with Steps 0–6 below as normal.
 
 ## Load-first rule — the read-only load is non-skippable
 
-A session may open with a direct question instead of a clean `/orient` — answer it, but **the read-only load (Steps 0–5) still runs in full first.** It is read-only: no writes, no approvals, no cost — and it is what puts the Profile (timezone, date format, names, key people, guardrails) and the project state into context *before* any value is used or written. **Never skip the load to jump to the answer** — a value back-filled from assumption because the Profile wasn't loaded is how false data enters the record (kernel §11).
+A session may open with a direct question instead of a clean `/orient` — answer it, but **the read-only load (Steps 0–6) still runs in full first.** It is read-only: no writes, no approvals, no cost — and it is what puts the Profile (timezone, date format, names, key people, guardrails) and the project state into context *before* any value is used or written. **Never skip the load to jump to the answer** — a value back-filled from assumption because the Profile wasn't loaded is how false data enters the record (kernel §11).
 
 Only **Step 6** (the session-row *write*) is ever deferrable — e.g. to avoid an extra write-grant on a quick-question session. If you defer it, **say so explicitly** in the response; never drop it silently.
 
@@ -56,6 +58,26 @@ After access, before loading: **if `profile/` is empty (or missing) and `ROOT/pr
 
 ---
 
+## Step 0.6 — Freshness gate *(built 01 Jul 2026 — P1 fix)*
+
+Before trusting any local read or making any write this session, prove the local copy is current against the cloud. This runs after the access check and demo-mode check, before anything is loaded or acted on.
+
+1. Read the active project's SSOT header `**Last updated:**` line via the native file tools (local).
+2. Read the same file's cloud state via the Drive API — `get_file_metadata` (`modifiedTime` is the **primary, machine-comparable signal**; the header-stamp text is a human-readable cross-check only, never the primary comparison — two instances must not disagree on which one governs).
+3. Compare. If the cloud is newer (later `modifiedTime`) → **STALE.**
+
+**On STALE: HALT.** State plainly: *"this machine is behind the cloud — local as of [X], cloud updated [Y]."* Do not trust local reads and do not write. Offer: (a) wait for Drive to finish syncing, then re-run `/orient`; or (b) continue **read-only** for this session off the **cloud** copy (Drive API reads only) — all writes blocked until local catches up.
+
+**On Drive-API failure (can't reach `get_file_metadata` — rate-limited, offline, permission error):** treat this the same as STALE, not as fresh. "Can't check" is never grounds to proceed as if verified — say so explicitly and offer the same two options.
+
+**On fresh (local matches cloud):** proceed to Step 1 as normal.
+
+**Scope — every file this session is about to write, not just two.** Check at minimum the active project's SSOT and `profile/PROJECTS.md` before Step 1 loads them — but before writing to *any* other file this session (Skunkworks, Session Ledger, Users, Issues, Scorecard, CHANGELOG, `profile/Noticeboard.md` — written by the Step 2.5 drain — or any ROOT/kernel file), run the same check on that specific file first. *Why named explicitly: the 01 Jul 2026 incident corrupted eight files, not two — a gate that only covers the SSOT + PROJECTS.md would have let the other six happen again unchecked.* Re-run the same check at `/offload`, immediately before each write — sync state can change mid-session (see `OFFLOAD.md`).
+
+*Why: 01 Jul 2026 — a session ran on a Streaming Mac whose local Drive cache hadn't pulled the prior night's changes. The file tools read that stale local cache, concluded files/sessions didn't exist, then wrote to the stale base — producing a duplicate folder chain via `create_file` on a path it couldn't find, and losing two sessions' worth of Decisions Log narrative even though the underlying work had already landed. Full incident + evidence: `profile/LAB.md`. Principle: verify the freshness of the medium, not just the value — extends kernel §11 (data integrity) and §12 (action integrity).*
+
+---
+
 ## Step 1 — Load the system + daily profile *(silent)*
 
 Read, in order:
@@ -78,6 +100,24 @@ Locate the active project in `profile/PROJECTS.md` — flag if it has no row (un
 - Confirm the project folder is identified and recorded in the README.
 - Be ready to surface the project instructions (so they can be pasted into Cowork project settings on a fresh machine if needed).
 - Flag if the README is missing or out of date.
+
+---
+
+## Step 2.5 — Noticeboard drain *(built 02 Jul 2026 — cross-project routing)*
+
+Projects can't see each other — every session mounts only ROOT + its own project folder. `profile/Noticeboard.md` (in ROOT, reachable from every session) is the one shared channel: a session in one project pins a note tagged for another; the target project picks it up here, at its next orientation. This step is the pickup. *(The pin side is `/offload`'s job — see `OFFLOAD.md → Noticeboard pin`.)*
+
+1. **Read `profile/Noticeboard.md`.** Missing or no open notes → skip silently, proceed to Step 3.
+2. **Freshness-check it** (same discipline as Step 0.6 — cloud `modifiedTime` vs local) since this step will write to it. Stale or uncheckable → surface matched notes **read-only** this session; no drain writes, no deletes.
+3. **Match.** Collect open notes whose tag equals the active project's **`Noticeboard tag`** in `profile/PROJECTS.md`. Tags are **stored** in that column, never derived or guessed from the project name — a rename must never silently break routing. One tag per line, by format; multi-target notes were duplicated per project at pin time.
+4. **Drain — interleaved with Step 3** (it needs the loaded SSOT). After Step 3 reads the Decisions Log:
+   - **Dedupe first (idempotency).** Skip any matched note already present as a `[from Noticeboard]` Open Action or already reflected in the SSOT. This is what makes a failed delete harmless: a note that couldn't be removed last session re-drains as a no-op, never a duplicate.
+   - **Append** each remaining note to the SSOT's **Open Actions** table, marked `[from Noticeboard]`, in the same orient turn — merged into the unified open-actions list Step 3 presents, so it's visible and correctable in the same window, not a silent unattended mutation.
+   - **Confirm the SSOT write landed** (re-read cloud `modifiedTime` — the `OFFLOAD.md` write-confirm discipline), then **hard-delete** the drained line from `Noticeboard.md`. Write → confirm → delete, atomically **per note**; nothing is ever held in an intermediate "drained" section. *(Why hard-delete: a held-then-pruned state is the exact two-phase-move failure shape that caused the 01 Jul 2026 half-landed-compaction duplicate. The audit trail lives in the target SSOT, not the board.)*
+   - **Both failure paths fail closed.** SSOT write fails or unconfirmed → the note stays untouched, retried next orient. Delete fails (e.g. the project-folder write grant lapsed — irrelevant here, but the ROOT grant can hiccup too) → say so explicitly; the dedupe above absorbs the re-read next session.
+5. **Ghost tags** (a tag matching no `PROJECTS.md` row): flag in one line, never touch the note. **Notes tagged for *other* projects: never surface their content** — the privacy wall applies inside the board too; they are not this session's business.
+
+*Why this position: after Step 2 (matching needs the active project identified), interleaved with Step 3 (writing needs the loaded SSOT for dedupe + append). This step is one of the non-overridable gates — see the README-first rule above.*
 
 ---
 
@@ -123,11 +163,13 @@ Report clearly:
 | Check | Status | Notes |
 |-------|--------|-------|
 | Access (read + write) | ✅ / ⚠️ / ❌ | Read-only? Name it. |
+| Freshness (local vs cloud) | ✅ / ❌ | STALE halts everything below — see Step 0.6 |
 | System + profile loaded | ✅ / ❌ | |
 | Project in index (PROJECTS.md) | ✅ / ❌ | Flag ghost / unregistered rows |
 | Project README found | ✅ / ❌ | |
 | Decisions Log — exactly one | ✅ / ❌ | Flag duplicates / conflicted copies |
-| Open actions identified | ✅ / ❌ | List them |
+| Noticeboard drain | ✅ / ⚠️ / — | N notes drained into Open Actions / — = none tagged for this project; ⚠️ = write unconfirmed or board stale, notes left pinned |
+| Open actions identified | ✅ / ❌ | List them (incl. `[from Noticeboard]` rows) |
 | Gap check | ✅ / ⚠️ | Days since last session; ⚠️ triggers the one question |
 | Instructions consistent | ✅ / ❌ | Flag contradictions |
 | Key people known | ✅ / ❌ | |
