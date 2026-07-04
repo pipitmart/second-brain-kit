@@ -18,7 +18,7 @@
 
 ## Step 1 — Install skills
 
-The six `.skill` files live in ROOT `skills/`. Install each through the Claude **desktop app → Settings → Capabilities → Skills → upload**, then pick the `.skill` file. Walk the user **one at a time**: name the file, tell them exactly what to click, and confirm it shows as active before moving to the next. The six: `orient`, `offload`, `stress-test`, `new-project`, `genesis`, `help-me`.
+The `.skill` files live in ROOT `skills/` — **the folder listing is the authoritative set; never assume a fixed count** (new skills ship with releases, and a hardcoded number in this file has gone stale before). List the folder, then install **every** `.skill` file present through the Claude **desktop app → Settings → Capabilities → Skills → upload**, then pick the `.skill` file. Walk the user **one at a time**: name the file, tell them exactly what to click, and confirm it shows as active before moving to the next.
 
 - **Streaming gotcha (do this first):** on a streaming Drive the `.skill` files are online-only placeholders, so the upload dialog may show *nothing to select*. Have the user open the `skills/` folder in their file browser once (or right-click `skills/` → Available offline) so Drive downloads the real files before uploading.
 - Each skill is a thin pointer — it just reads its kernel `.md`. If an upload is rejected, it's almost always the placeholder issue above, not a bad file.
