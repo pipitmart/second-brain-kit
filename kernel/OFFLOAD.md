@@ -29,6 +29,7 @@ Sync state can change mid-session, so the freshness check `/orient` ran at Step 
 2. If the cloud moved ahead during the session (another machine wrote in the meantime) → **STALE.** Stop, tell the user, do not write on top of it — reconcile first (surface the cloud's newer content; don't silently overwrite).
 3. **If the Drive-API check itself fails** (can't reach `get_file_metadata`) → treat as STALE, not fresh. Never write on the assumption that "couldn't check" means "must be fine."
 4. If fresh → proceed to write as normal.
+5. **Bash-sandbox writes *(added 03 Jul 2026)*:** the sandbox mount is a **third surface** that can be stale (NUL-padded or silently truncated) even when local and cloud agree, and a folder re-grant does not refresh it (02–03 Jul 2026 — `profile/LAB.md`). When the bash and file-tool views of a target file disagree, **the file tool wins** — bash writes to that file are unsafe until the mount is proven fresh (mount size == cloud `fileSize`). Prefer the native file tools for every SSOT write.
 
 **After writing, confirm it landed:** re-read the file's cloud `modifiedTime`/header stamp via the Drive API and verify it reflects the change just made. **If the confirm fails** (cloud still shows the old state) — retry the write once; if it still doesn't land, **stop and tell the user explicitly** ("the write to [file] may not have persisted — check it manually before trusting it next session"). Never report a session as offloaded cleanly while a write is unconfirmed.
 

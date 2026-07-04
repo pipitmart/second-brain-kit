@@ -13,12 +13,15 @@
   and **v2.3 = the 0.4 baseline.** A parallel root-vX line was retired to avoid the
   version-collision trap (folder/header/prefs disagreeing). Roadmap + per-version gates
   live in the Project SB Decisions Log.
+- **Version-header shape is a load-bearing interface (do not break it).** The update mechanism (`kernel/UPDATE.md`) detects new versions by parsing the **first released header** in this file. Released headers MUST match `## vX[.Y[.Z]] — <FINAL|patch> DD Mon YYYY[ — optional subtitle]`; the leading `## Unreleased …` block is ignored by detection. Change this shape and every install's update check silently breaks. If the format ever must change, ship a migration that teaches installs the new parse first.
 
 ## Release-cut checklist (do this when a gate passes)
 1. Rename `## Unreleased` → `## vX.X — FINAL [date]`
 2. Add a **3-line user-facing summary** at the top of that block — what a recipient gets in this version, in plain English (not kernel-dev notes). This is the release note that goes with the kit.
 3. Open a new `## Unreleased` block above it for the next version's accumulating changes.
 4. Re-zip the kit and commit to git.
+5. **Verify the new header parses** — it must match `## vX[.Y[.Z]] — <FINAL|patch> DD Mon YYYY[…]` (the update-detection contract above). A malformed header ships a silent break to every install.
+6. **Verify the new MIGRATIONS block names every changed file** — diff the kit's file list against the previous release and confirm the block's delivery set covers every added or changed file (including changed `.skill`s). The updater fetches only what blocks name — an unnamed file silently never reaches updating installs.
 
 *The items listed under Unreleased are kernel-dev notes (for maintainers + future Claude instances). The user-facing summary is written fresh at release cut — don't conflate the two.*
 
@@ -26,6 +29,9 @@
 
 ## Unreleased — SB v0.6 in development
 *0.6 = updates + recovery — forward: update/safety channel · improvement: stronger `/help-me`.*
+- **[03 Jul 2026] `/help-me` Branch C — recovery (improvement cornerstone):** third branch for "I'm lost, nothing's broken" — re-teaches the loop by running one real loop on the user's own work (calibrate → orient together → one real action → offload → persistence proof), never from docs. `/orient`'s gap-check now offers it on benign-but-lost answers (decline logged, ~2-week re-offer cap); GLOSSARY updated to three branches. *(At release cut: refresh the `help-me.skill` description — it still says two branches.)*
+- **[03 Jul 2026] Bash-mount staleness rule (safety):** `ORIENT.md` Step 0.6 + `OFFLOAD.md` freshness gate now name the bash-sandbox mount as a third stale surface — when bash and file-tool views of a file disagree, the file tool wins; bash writes are unsafe until the mount matches cloud `fileSize`. (Second live sighting 03 Jul, PMX repro — `profile/LAB.md`.)
+- **[04 Jul 2026] Kit update mechanism (forward cornerstone):** new `kernel/UPDATE.md` (dumb-stable run protocol — snapshot → check → consent → additive write → verify; the OLD install's protocol executes the NEW kit's migration blocks) + `kernel/MIGRATIONS.md` (append-only per-version ledger; v0.5 Noticeboard + v0.6 blocks backfilled). Pull-to-system detection: one raw-fetch of this CHANGELOG behind a single shared 7-day stamp in `profile/STACK.md`, read by every automatic door (orient Step 0.7, stress-test Gate 0.5, help-me A+C) and bypassed by the explicit phrase "update SB". Migrations are additive-only on profile *structure* — user *content* is never modified or guessed (kernel §11). Genesis now stamps the kit version; `profile-templates/STACK.md` carries the placeholder. Pre-0.6 installs get one hand-carried bootstrap prompt (maintainer-carried; not part of the kit), self-serve from 0.6 on.
 
 ## v0.5 — FINAL 02 Jul 2026 — release well on git
 **What's new in v0.5:** a pre-flight checklist catches setup snags before they cost you; clearer help when Drive accounts don't match; notes now route between your projects automatically — plus the new `/review` and `/grill-me` commands.

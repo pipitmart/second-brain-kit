@@ -72,9 +72,27 @@ Before trusting any local read or making any write this session, prove the local
 
 **On fresh (local matches cloud):** proceed to Step 1 as normal.
 
+**Third stale surface — the bash-sandbox mount *(added 03 Jul 2026)*.** Local (file-tool) and cloud are not the only two views: the bash sandbox's mount of a Drive folder can serve a stale, NUL-padded, or **silently truncated** copy of a file even when the file tools and cloud agree — and a `request_cowork_directory` re-grant does NOT refresh it (observed 02–03 Jul 2026; detail `profile/LAB.md`). Rule: **when the bash view and the file-tool view of a file disagree, the file tool wins.** Never write a Drive file from bash until the mount is proven fresh (mount size == cloud `fileSize`); this gate's local-vs-cloud comparison says nothing about the bash mount — check it separately whenever bash is about to read or package a Drive file.
+
 **Scope — every file this session is about to write, not just two.** Check at minimum the active project's SSOT and `profile/PROJECTS.md` before Step 1 loads them — but before writing to *any* other file this session (Skunkworks, Session Ledger, Users, Issues, Scorecard, CHANGELOG, `profile/Noticeboard.md` — written by the Step 2.5 drain — or any ROOT/kernel file), run the same check on that specific file first. *Why named explicitly: the 01 Jul 2026 incident corrupted eight files, not two — a gate that only covers the SSOT + PROJECTS.md would have let the other six happen again unchecked.* Re-run the same check at `/offload`, immediately before each write — sync state can change mid-session (see `OFFLOAD.md`).
 
 *Why: 01 Jul 2026 — a session ran on a Streaming Mac whose local Drive cache hadn't pulled the prior night's changes. The file tools read that stale local cache, concluded files/sessions didn't exist, then wrote to the stale base — producing a duplicate folder chain via `create_file` on a path it couldn't find, and losing two sessions' worth of Decisions Log narrative even though the underlying work had already landed. Full incident + evidence: `profile/LAB.md`. Principle: verify the freshness of the medium, not just the value — extends kernel §11 (data integrity) and §12 (action integrity).*
+
+---
+
+## Step 0.7 — Kit update check *(cadence-guarded — built 04 Jul 2026, v0.6)*
+
+A quiet check that this install isn't running an outdated kit. **Guarded so it costs nothing on a fresh install and hits the network at most once a week.**
+
+1. Read the shared stamp in `profile/STACK.md`: `SB kit: vX.Y · last update-check: DD Mon YYYY`. **No stamp** → this is a pre-0.6 install; surface one line ("this install predates the update mechanism — say 'update SB' when you want to bring it current") and proceed. **Stamp present and `last update-check` ≤ 7 days ago** → skip silently (zero fetches, zero output). Only if >7 days old, continue.
+2. One raw fetch of the repo `CHANGELOG.md` (`https://raw.githubusercontent.com/pipitmart/second-brain-kit/main/CHANGELOG.md`); parse the top released version (rule in `kernel/UPDATE.md`). **Update the stamp's `last update-check` to today regardless of outcome** (this is what makes the 7-day guard shared across all doors).
+3. **Fetch failure = note-and-proceed, never a halt** — one line ("couldn't reach the repo to check for updates; carrying on"), continue orientation.
+4. If the repo version is newer: **tier-aware surfacing** — a *safety*-tier update surfaces as one line **every** orient until applied; a *feature*-tier update is mentioned **once**, then stays quiet unless the user asks. Offer the run (`kernel/UPDATE.md`); "later" is always fine and never blocks the session.
+5. An explicit "update SB" / "check for updates" at any time ignores the 7-day guard and fetches immediately.
+
+*This step is read-mostly: its only write is the shared stamp's date, subject to the same freshness discipline as any other write this session.*
+
+*(Step 0.7 is NOT one of the non-overridable gates — a project running a custom README orient protocol may omit it; the `/stress-test`, `/help-me`, and explicit "update SB" doors still cover the cadence.)*
 
 ---
 
@@ -130,7 +148,7 @@ Name-search for `Decisions Log - [PROJECT].md` in the project folder.
 - **Verify user-owned actions against reality before surfacing them** (kernel §12). Any open action whose owner is the **user** — a manual step only they can do (upload a skill, drop a file into a folder, connect an account, flip a setting) — may already be done outside Claude's visibility. Before listing it as still-open, check actual state (folder contents via name-search/Read, what the user shows on screen, the relevant Settings). If verifiable, check it; if not verifiable, surface it as unverified and ask. When confirmed done, close it in the SSOT in this session. *(The system verifies; it does not rely on the user remembering to report.)*
 - Flag if missing, unreadable, empty, or stale (no recent updates while work is active).
 - If the log carries compaction markers, confirm `Archive - [PROJECT].md` exists (name-search). **Do not read the archive** — it is the SSOT's cold layer, loaded only on demand when history is actually needed.
-- **Gap check:** compare today against the project's Last session (in `profile/PROJECTS.md`). If the gap exceeds the profile's threshold *while Open Actions sit untouched*, ask one question — "It's been [X] days — what happened?" — and triage per `kernel/HELP-ME.md` Branch B. Benign answer (trip, rest, life): log one line, move on. Loaded answer: shift to the red-alert flow before starting work.
+- **Gap check:** compare today against the project's Last session (in `profile/PROJECTS.md`). If the gap exceeds the profile's threshold *while Open Actions sit untouched*, ask one question — "It's been [X] days — what happened?" — and triage per `kernel/HELP-ME.md` Branch B. Benign answer (trip, rest, life): log one line, move on. Loaded answer: shift to the red-alert flow before starting work. **Benign-but-lost** *(added 03 Jul 2026)* — the answer is fine but reads lost ("honestly I forgot how this works"), or the log shows sessions happening with nothing landing: offer the ~10-minute recovery refresher (`kernel/HELP-ME.md` Branch C) — offer, never force; a decline is logged and not re-offered for ~2 weeks unless the user asks.
 
 ---
 

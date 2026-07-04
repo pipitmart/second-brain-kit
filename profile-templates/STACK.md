@@ -3,6 +3,8 @@
 *Version: 1.0 | [DD Mon YYYY] — created by /genesis*
 *Scope: Profile. Loaded every session by `/orient`. Tools only — system rules live in the kernel.*
 
+**SB kit:** vX.Y · last update-check: [DD Mon YYYY]  *(the version this install compares against the repo — written by `/genesis`, bumped by `kernel/UPDATE.md`)*
+
 ## Core tools
 | Tool | Purpose | Status |
 |------|---------|--------|

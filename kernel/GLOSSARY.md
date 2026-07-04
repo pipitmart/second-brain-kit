@@ -62,6 +62,10 @@
 
 **Drive MCP** — Claude's connection to Google Drive for **reading and searching** files in the cloud. *Why it matters:* it can read but should never be used to *create* a file that already exists (that's what caused duplicates). Writing is done by in-place edit instead.
 
+**Kit update / migration** — Bringing an install to a newer kit version. A plain kernel-file swap covers most changes; a **migration** is the extra step when a new version needs *structure* added to your profile layer (a new file, a new column). Migrations are **additive-only** and never touch your content. *Why it matters:* it's how a shipped improvement reaches an install that's already in daily use — without a reinstall and without risking what you've already written.
+
+**Kit-version stamp** — The `SB kit: vX.Y · last update-check: …` line in `profile/STACK.md`. *Why it matters:* it's the local version the update check compares against the repo, and the shared 7-day clock all the automatic doors read — so the network is hit at most once a week no matter how many sessions you open.
+
 **Access check** — A quick test at the start of `/orient`: can Claude read ROOT, and is the folder mounted so it can write? *Why it matters:* if it's read-only, Claude must ask you to mount the folder rather than silently making duplicate files.
 
 ---
@@ -76,7 +80,9 @@
 
 **`/genesis`** — How the system starts for someone new (auto-triggered when `/stress-test` finds an empty profile). Opens with *why this exists*, then forks: **Demo** — a repeatable ten-minute guided run on sample data (a fictional shop owner) that shows the memory loop working across a brand-new chat, touching nothing real; **Live** — builds *your* profile, **once per user**: three honest opening questions, friction diagnosis, a first project scoped from your own data. *Why it matters:* Demo lets you feel the value before investing anything; Live makes it yours — sufficient on day one, then self-correcting via the living mirror.
 
-**`/help-me`** — Run **when you're stuck** — or when the system flags that you might be. Two branches: if the *task or system* is broken, Claude snapshots your work, fixes the problem, and restores you to where you stopped; if *you* are in a loop (work stalled, a red line crossed), it walks the red-alert flow — one question, honest triage, one small re-entry step. *Why it matters:* it's the support channel. There is no architect to call.
+**`/help-me`** — Run **when you're stuck** — or when the system flags that you might be. Three branches: if the *task or system* is broken, Claude snapshots your work, fixes the problem, and restores you to where you stopped; if *you* are in a loop (work stalled, a red line crossed), it walks the red-alert flow — one question, honest triage, one small re-entry step; if you're simply *lost* (forgot the loop, using a sliver of the system), it re-teaches by running one real loop on your own work, ending with the proof that the system remembered. *Why it matters:* it's the support channel. There is no architect to call.
+
+**"update SB" / "check for updates"** — A **phrase, not a slash-command** (there's deliberately no `.skill` for it). Says: check the public kit repo for a newer version and, with your go-ahead, apply it — including any profile-layer structural migrations — without touching your content. Runs `kernel/UPDATE.md`. *Why it matters:* it's the one door you type; the automatic doors (orient, stress-test, help-me) do the same thing on a 7-day cadence, but this ignores the guard and checks now.
 
 **Red line** — An **observable, pre-agreed** event that means stop, pause, or ask for help — set when you're calm (`/genesis` asks for your system-abandonment tell; `/new-project` asks for each project's failure line). *Why it matters:* the system can only quote your own words back to you in the storm if you wrote them in the calm. Feelings don't count — days, numbers, and events do. Revisable in calm only.
 

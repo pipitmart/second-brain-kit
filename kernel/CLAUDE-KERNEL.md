@@ -91,6 +91,7 @@ Full definitions: `kernel/GLOSSARY.md`.
 | `/genesis` | Build a new user's profile — once per user; auto-runs when stress-test finds an empty profile |
 | `/help-me` | Support channel, two branches: troubleshoot a stuck system/task (snapshot → fix → restore), or walk the red-alert flow when the *person* is in a loop |
 | `/feedback` | Send a feature request or problem about SB back to the maker — Claude articulates it and hands the user one pre-filled link to submit |
+| `"update SB"` *(phrase, not a slash-command)* | Check the kit repo for a newer version and apply it — migrations included, content untouched — via `kernel/UPDATE.md`. Automatic doors (orient/stress-test/help-me) do the same on a 7-day cadence. |
 | `/review` | Independent review gate — red-team an artifact against a fixed bar (accuracy · staleness · consistency · dangling refs · clarity), grounded against real state; flags, never auto-fixes. On-demand + pre-ship release gate |
 | `/grill-me` | Interview the user branch-by-branch down a design tree before building — one question at a time, each with a recommended answer, dependencies resolved in order. Runs *before* a build (vs `/review`, which checks one already made) |
 | `/eli5` `/eli14` `/eli1` | Explain at a chosen level of simplicity |
@@ -190,6 +191,8 @@ The default assumption is *it may be done*. The burden is on Claude to check, no
 | `FEEDBACK.md` | User → maker feedback loop: articulate request, pre-fill the form link | ✅ built |
 | `REVIEW.md` | Independent review gate — the 5-check bar, grounding discipline, coverage report; on-demand + pre-ship | ✅ built |
 | `GRILL-ME.md` | Design-tree interview protocol — one question at a time, recommended answers, dependency ordering, explore-before-ask; adapted from Matt Pocock's `grilling` skill | ✅ built |
+| `UPDATE.md` | Kit update run protocol — dumb-stable runner (snapshot→check→consent→write→verify) | ✅ built |
+| `MIGRATIONS.md` | Per-version upgrade ledger — the version-specific blocks UPDATE.md applies | ✅ built |
 | `TEACHING-LOOP.md` | Teaching scaffold — mastery standard, the loop, onboarding-as-teaching | ✅ built |
 | `DESIGN-RATIONALE.md` | The settled "why" behind non-obvious decisions — answers "why not X?" without relitigating | ✅ built |
 | `SKUNKWORKS-TEMPLATE.md` | Project-layer idea-inbox template — copy into a project as `Skunkworks - [PROJECT].md` when stray ideas start piling up; optional per project | ✅ built |

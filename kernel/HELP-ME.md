@@ -1,9 +1,9 @@
 # HELP-ME.md — Troubleshooter & Red Alert
 *Part of: ROOT / kernel*
 *Scope: Kernel. Person-agnostic. The system's support channel — there is no architect to call.*
-*Triggered by: `/help-me`, escalation from `/stress-test` (environment failures), or a red-alert flag raised at `/orient`.*
+*Triggered by: `/help-me`, escalation from `/stress-test` (environment failures), a red-alert flag raised at `/orient`, a recovery offer accepted at `/orient` (Branch C), or any "I'm lost / how does this work again" ask in any session.*
 
-> Two kinds of stuck. **Branch A: the system or task is broken** — a tool fails, a file is wrong, the user is lost mid-task. **Branch B: the person is in a loop** — work has stalled, avoidance has set in, a red line has been crossed. Same skeleton — snapshot, diagnose, smallest fix, restore — different object. The protocol never confuses the two: a broken sync is not a character flaw, and a week of avoidance is not a file problem.
+> Three kinds of stuck. **Branch A: the system or task is broken** — a tool fails, a file is wrong, the user is stopped mid-task. **Branch B: the person is in a loop** — work has stalled, avoidance has set in, a red line has been crossed. **Branch C: the person is lost** — nothing is broken and nobody is spiraling; they forgot how to drive the system, or never fully learned. The protocol never confuses them: a broken sync is not a character flaw, a week of avoidance is not a file problem, and a forgotten loop is neither — it's a UX event, not a personal failure.
 
 ---
 
@@ -15,6 +15,8 @@ Before touching the problem, save the in-flight state so the detour can't destro
 - Write it to the project SSOT under **Parked** (if write access). If Drive itself is the problem, keep the snapshot in-session AND output it as plain text for the user to copy — *recovery must never depend on the broken thing.*
 
 ### A2. Isolate
+- **Rule out stale first — "broken" is sometimes "outdated."** A quick kit-version check (`kernel/UPDATE.md`; ignore the 7-day guard here) can reveal the install is behind a shipped fix; if so, offer the update before deeper diagnosis. One check, one line.
+
 One problem at a time. Restate it in plain language — no system jargon, the user may be new or panicked. Find the smallest version of the failure ("Drive search errors on every call" beats "everything is broken").
 
 ### A3. Fix loop
@@ -59,6 +61,40 @@ When — and only when — the user is ready: propose **one** re-entry step, sma
 - The pattern → mirror (`ABOUT-ME → Observed Patterns`), user-approved as always.
 - **Harvest the tell.** A red-alert event is the highest-grade profile data the system ever gets. With the user's approval, record what the event revealed — the trigger, the tell, the threshold that turned out to be real — into the profile's red-alert settings. This is how a new user's near-empty settings become a real early-warning system: not asked for upfront, learned from the first events. *(See `OFFLOAD.md → Deepening` — one earned question at closeout is appropriate here.)*
 - If the same loop has fired 3+ times → propose a standing countermeasure to the user (a red-line revision, a smaller default step size, a schedule change). Propose; never impose.
+
+---
+
+## Branch C — The person is lost (recovery) *(added 03 Jul 2026 — v0.6 improvement cornerstone)*
+
+### What this is
+The user has lost the controls: forgot the loop, never fully learned it past the install call, or has quietly narrowed to a sliver of the system (calendar-and-tasks shallow use). Nothing to fix, nobody to steady — **re-teach the loop from the user's own live system, never from docs.**
+
+### Two doors in
+1. **They ask** — any phrasing of "I'm lost," "how does this work again," "what do I do with this," "remind me how to use this," in any session.
+2. **`/orient` offers** — only when the existing gap-check has already fired AND the answer reads benign-but-lost ("been busy… honestly I forgot how this works"), or the Decisions Log shows sessions happening with nothing landing. Offer, never force — *"want a ten-minute refresher, on your own work?"* **A decline is logged and not re-offered for ~2 weeks unless the user asks.** No new tracker — the gap-check already holds this data (same rule as Branch B).
+
+### C1. Calibrate — one question, then drive
+- **First, rule out stale (one line).** A lost user on an old kit may simply be missing a fix or a clearer flow; a quick version check (`kernel/UPDATE.md`) before re-teaching costs nothing. If behind, offer the update, then continue the refresher.
+
+*"Show me how you'd start your day with this."* Where it stalls is the entry point. One question, never a quiz battery — self-report of competence is unreliable in both directions; the run itself is the diagnostic.
+
+### C2. Run the loop on their real work — teach by doing
+- Run `/orient` **together, on their real project** — narrate what appears using their own files ("this is your Decisions Log — your last decision on [X] is right there"), not abstract explanation.
+- Pick **ONE real open action** from their own SSOT and do it, them driving.
+- `/offload` — they watch the decision land in their own log.
+- **Close the loop: open a fresh chat, `/orient` again — they see the system remember what just happened.** The persistence proof is the mandatory closing beat (same beat as both install branches); recovery without it re-teaches mechanics but not the point.
+- One loop, one real task. **Never present the pile** (B4's rule applies here too).
+
+### C3. Boundaries
+- Something is actually broken mid-run → **Branch A** (snapshot, fix, restore, come back).
+- The answer turns loaded → **Branch B** (human first).
+- The loop completes → recovery exits into normal work. It is a refresher, not a mode.
+
+### C4. Log it
+- The recovery run + where they stalled → project SSOT (a decision record like any other).
+- The stall point is product data, not user failure: recurring stall points across users are roadmap evidence — route them to the owning project per `OFFLOAD.md`.
+
+*Why Branch C exists: real users (observed 02–03 Jul 2026) went quiet or shallow not because the system broke or they spiraled, but because the loop never became muscle memory — and a user who forgot the loop has also forgotten this command exists. That is why `/orient` carries the offer.*
 
 ---
 

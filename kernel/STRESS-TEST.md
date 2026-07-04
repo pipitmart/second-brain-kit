@@ -55,6 +55,16 @@ Run every check. A listed MCP that errors on first call is **not** connected —
 
 ---
 
+## Gate 0.5 — Kit version check
+
+`/stress-test` runs rarely, so it **always checks** (it ignores `/orient`'s 7-day guard) and it **always updates the shared stamp**:
+
+- Read `profile/STACK.md`'s `SB kit:` stamp (absent → pre-0.6 install). Raw-fetch the repo `CHANGELOG.md`, parse the top released version (rule in `kernel/UPDATE.md`), and **write today into the stamp's `last update-check`**.
+- Behind → surface it and offer the update run (`kernel/UPDATE.md`); a *safety*-tier gap is named as a health finding, not buried. Fetch failure → note it and proceed (a broken network is not a broken instance).
+- Current → one green line ("kit is up to date, vX.Y").
+
+---
+
 ## Orientation check — can Claude answer these unaided?
 
 1. **Who is the user?** (profile loaded)
