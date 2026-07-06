@@ -53,6 +53,10 @@ Run every check. A listed MCP that errors on first call is **not** connected —
 
 **On any Gate 0 failure: diagnose — name the failing check and the likely fix — then escalate to `/help-me` to walk the repair, and re-run.** Do not proceed on a broken environment.
 
+## After Gate 0 — Project-defined instance setup (optional)
+
+*(Runs here, not earlier: it needs the project folder confirmed mounted and its README readable — both proven by Gate 0.)* Some projects define their own per-instance setup in their README — most commonly a **local scheduled-task backstop** (a Cowork scheduled task, stored on this one machine, does not sync via Drive and does not follow the user to a new machine or a recreated project). If the active project's README has a section naming a scheduled-task or other local-only setup, offer to (re)create it now. **Prefer a calendar-anchored reminder over a local scheduled task where the project supports one** — a recurring calendar event is durable across machines and instances; a Cowork scheduled task is not and should be treated as an optional convenience layered on top, never the sole backstop.
+
 ---
 
 ## Gate 0.5 — Kit version check

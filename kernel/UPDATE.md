@@ -29,6 +29,8 @@ Detection parses the CHANGELOG's top version header, so its shape is a **contrac
 
 *(Verified against the live CHANGELOG at build: `v0.5`/`v0.4`/`v2.2` are `— FINAL`, `v0.4.1` is `— patch`; all parse. Any release cut that changes this header shape silently breaks every install's update check — the constraint is recorded in `CHANGELOG.md`'s own header and in the release-cut checklist for exactly this reason.)*
 
+*This same parse contract also gates **block eligibility** at run time (step 4a below) — detection and eligibility share one definition of "released." A block in the ledger for a version not yet released is held, never applied.*
+
 ---
 
 ## The run — order of operations
@@ -46,7 +48,13 @@ Runs when a check has found a newer version **and** the user said yes (or asked 
 
 **4. Evaluate preconditions against actual state — never the stamp.** For each `MIGRATIONS.md` block from the local version forward, run its **Precondition** against the real install (file present? column present?). Build the applicable list. Already-satisfied preconditions = **no-op**, reported as such. *(The stamp only tells you where to start looking; state decides what actually runs — mirrors kernel §3 fingerprint-over-ID and §12 verify-over-log. If no stamp exists, treat the install as pre-0.6 and evaluate every block from the earliest forward.)*
 
-**5. Consent — one approval per version-block.** Present each applicable version's changes as one plain-language summary: *"v0.X applies N changes: [one line + why each]. Go?"* No consent → nothing writes for that block; the rest may still proceed. §11 value-confirms happen **inline** during execution (e.g. show each derived value before writing it), not batched here.
+**4a. Eligibility — released versions only.** Cross-check every block on the applicable list against the newest **released** version, parsed from the **repo's canonical `CHANGELOG.md`** using the channel's parse contract above (skip `## Unreleased`; first `## vX[.Y[.Z]] — <FINAL|patch>` header; field-by-field numeric compare) — **never** the local install's copy (stale mid-update by definition) and never a CHANGELOG this run is itself delivering. One source of version truth.
+   - Block version **≤ newest released** → eligible; proceed to consent.
+   - Block version **newer than newest released** (still under `## Unreleased`, or absent from the CHANGELOG entirely) → **held, never offered for consent.** Report it plainly: *"vX.Y exists in the migration ledger but isn't a released version yet — held, not applied."* A held block re-becomes eligible automatically the moment its version is cut (its header flips to FINAL) — nothing to undo, just re-run.
+   - No released version parses at all → **apply nothing** (note-and-stop). Never fall back to "apply whatever the ledger carries."
+   *(Why: `MIGRATIONS.md` is append-only and runs ahead of releases during development — "present in the ledger" can never mean "safe to apply." Unreleased = uninstallable must be a property of the structure, not of model diligence: live case 06 Jul 2026 — a bootstrap run offered an unreleased block and the user approved it; only the model's own unprompted CHANGELOG check held it back.)*
+
+**5. Consent — one approval per version-block.** Present each **eligible** (step 4a) version's changes as one plain-language summary: *"v0.X applies N changes: [one line + why each]. Go?"* **Name the manual steps in this same summary, up front:** any `.skill` files the block changes (the user drags them in Settings at step 8) and any leftover files a Streaming Drive can't delete (the user trashes them at the end) — the user hears "two things will need your hands" before consenting, never as an end-of-run surprise. No consent → nothing writes for that block; the rest may still proceed. §11 value-confirms happen **inline** during execution (e.g. show each derived value before writing it), not batched here.
 
 **6. Execute — additive, atomic, fail-closed.** Apply each consented block's **Action**: additive writes only. **Write → cloud-confirm (`modifiedTime`) → next**, one migration at a time. Any failure: **stop, report plainly, park the remainder.** Idempotent preconditions + the step-3 snapshot make retry free and safe — a half-applied run re-runs cleanly because satisfied preconditions no-op.
 
@@ -68,6 +76,7 @@ One "yes, update" (or "later") · one consent per version-block · the occasiona
 
 ## Fail-closed summary (the safety contract)
 - No snapshot → no writes.
+- Block version not released (step 4a) → held, never offered, never applied. No released version parseable → nothing applied.
 - Fetch fails and no zip fallback → note it, proceed with the session, nothing written.
 - Consent refused → nothing written for that block.
 - Any write unconfirmed → stop, park the remainder, report.
