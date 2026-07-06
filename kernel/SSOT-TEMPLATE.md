@@ -11,6 +11,7 @@
 ```
 # Decisions Log - [PROJECT]
 *Owner: [name] · Created: [DD Mon YYYY] · Folder: [project folder] · README: README-[PROJECT].md*
+**Last updated:** [DD Mon YYYY] · Sess.[N] — [one-sentence outcome, nothing chained beneath it]
 
 ## Open Actions
 | # | Action | Owner | Status | Opened |
@@ -41,6 +42,7 @@
 - **Decisions are newest-first**, each with a `*Why:*` line — rationale travels with the decision.
 - **Parked** holds anything deferred, with what it's waiting on, so nothing is silently dropped.
 - **Write as you go.** Append a decision the moment it's made — the autosave behaviour `/offload` enforces — not only at session end. Requires write access; if read-only, stage it and prompt to mount.
+- **The `**Last updated:**` header stamp is ONE line, always replaced, never chained** *(file-diet rule, 0.7-2, 06 Jul 2026)* — date + session number + a single-sentence outcome, nothing else. It exists purely as the freshness check (does this copy match the latest cloud version?); the actual history of what happened lives once, in `## Session Log` below (and a project's WARM `Session Ledger`, if it has one). Full behavior + why: `kernel/OFFLOAD.md → What it writes`.
 - **The SSOT owns all living state — the README does not.** Open actions, decisions, status, and anything that changes session to session belong here, in exactly one place. `README-[PROJECT].md` is the **charter** (objective, scope, constraints, key people, conventions, red line) and changes only when the charter itself changes. A README must **never** carry its own open-items / to-do list — two homes for the same state guarantees drift.
 
 ---
