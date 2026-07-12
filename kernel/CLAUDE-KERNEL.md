@@ -127,6 +127,7 @@ The Profile may define personal aliases for these. Full definitions: `kernel/GLO
 - `profile/ABOUT-ME.md` — deep profile + the living mirror (load on stress-test, not daily; `/offload` appends observed patterns)
 - `profile/LEARNING-ME.md` — the user's teaching standard and learning patterns
 - `profile/STACK.md` — the user's tools and machines
+- `profile/Scoreboard.md` — the metric: projects · sessions · hours, one row per `/offload` (written by `OFFLOAD.md`; read on demand, not in the daily load). Lives in ROOT because ROOT is mounted in every session — the only surface a **pan-project** total can exist on. Counts are raw; never a multiplier or an invented baseline (§11)
 - `profile/Noticeboard.md` — the cross-project channel: project-tagged notes pinned at `/offload`, drained into the target project's SSOT at `/orient` Step 2.5 (ROOT is mounted in every session, so this file crosses the mount/privacy wall)
 - `profile/LAB.md` — cross-project system/infra investigations log (loaded on demand, not daily; STACK carries the settled summary + a pointer). This is where infra problems that span projects — Drive sync, mounts, the write path, connectors — get worked, since ROOT is the only folder mounted in every project.
 
