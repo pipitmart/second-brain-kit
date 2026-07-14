@@ -4,9 +4,11 @@ Claude already remembers you across chats — but not your *work*. Second Brain 
 
 **Requirements:** a paid Claude plan (desktop app / Cowork) + a Google account with Drive for Desktop installed + about one hour.
 
-**Setup:** Clear `PRE-FLIGHT.md` first (ten minutes, four checks). Then open `START-HERE.md` and follow it — one pasted prompt, Claude does the rest.
+**Get the kit:** download **`second-brain-kit-v0.7.zip`** from the [latest release](https://github.com/pipitmart/second-brain-kit/releases/latest) — *not* the "Source code (zip)" GitHub generates automatically next to it; that one unpacks into the wrong folder shape.
 
-**Guided install recommended for now** — self-serve is on the roadmap. Want a hand the first time through? Email **jeriel@pipitmart.com**.
+**Setup:** Clear `PRE-FLIGHT.md` first (ten minutes, four checks). Then open `START-HERE.md` and follow it — one pasted prompt, Claude does the rest. It's built to run solo, start to finish.
+
+Prefer a walkthrough the first time through? Email **jeriel@pipitmart.com**.
 
 If SB lands for you, star this repo — stars are how this project measures whether it's working.
 
