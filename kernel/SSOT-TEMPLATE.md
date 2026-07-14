@@ -13,25 +13,82 @@
 *Owner: [name] · Created: [DD Mon YYYY] · Folder: [project folder] · README: README-[PROJECT].md*
 **Last updated:** [DD Mon YYYY] · Sess.[N] — [one-sentence outcome, nothing chained beneath it]
 
-## Open Actions
+## Open Actions            ← HOT · OPEN rows only · ~3-line cap per row
 | # | Action | Owner | Status | Opened |
 |---|--------|-------|--------|--------|
-| 1 | [smallest concrete next step] | [name] | Open | [DD Mon YYYY] |
+| 1 | [smallest concrete next step] — [pointer: the dated Decision entry or Build Brief holding the full reasoning] | [name] | Open | [DD Mon YYYY] |
+
+## Evidence            ← HOT · what exists and where · one line each · added at /offload
+- [source]: [what it contains, in one line] — [where it lives]
+
+## Next session            ← HOT · optional · the agenda flags, a few lines
+- [what the next session opens on]
+
+## Session Log             ← HOT: this header, the totals line, and the table's column header. The ROWS are warm.
+**Totals:** [N] sessions · ~[H] hours since [DD Mon YYYY]
+*Hours are approximate — a session closed without `/offload` isn't time-stamped, so it counts toward sessions but not hours. A sense-of-progress number, not a timesheet.*
+
+| # | Date | Start–End (local) | ~Hrs | What happened |
+|---|------|-------------------|------|---------------|
+<!-- ═══ WARM BELOW — /orient reads above this line ═══ -->
+| [N] | [DD Mon YYYY] | [HH:MM]–[HH:MM] | [n.n] | [one-line summary] |   ← newest first: `/orient` Step 6 inserts here, directly under the marker
+| 1 | [DD Mon YYYY] | [HH:MM]–[HH:MM] | [n.n] | [one-line summary] |
 
 ## Decisions  (newest first)
 - **[DD Mon YYYY]** — [the decision]. *Why:* [rationale].
 
 ## Parked / Pending
 - [item] — waiting on [what / whom]
-
-## Session Log
-*[N] sessions · ~[H] hours since [DD Mon YYYY]*
-*Hours are approximate — a session closed without `/offload` isn't time-stamped, so it counts toward sessions but not hours. A sense-of-progress number, not a timesheet.*
-
-| # | Date | Start–End (local) | ~Hrs | What happened |
-|---|------|-------------------|------|---------------|
-| 1 | [DD Mon YYYY] | [HH:MM]–[HH:MM] | [n.n] | [one-line summary] |
 ```
+
+---
+
+## The hot/warm split — the read boundary *(built 14 Jul 2026, SB Product 0.7-14)*
+
+**One file, two zones, one marker line.** The SSOT stays **exactly one file** — a second file claiming truth about open state is the duplication disease the file diet (0.7-2) exists to kill. What changes is *how much of it `/orient` reads*.
+
+```
+<!-- ═══ WARM BELOW — /orient reads above this line ═══ -->
+```
+
+**The marker is a load-bearing interface** — a fixed literal line, like the CHANGELOG's version header. It is grep-able and unambiguous; it is never reworded, decorated, or duplicated. `/orient` Step 3 reads **down to it and stops**.
+
+| Zone | Holds | Who reads it |
+|------|-------|--------------|
+| **HOT** (above the marker) | `Last updated:` header · the **current** status paragraph, if the project versions its work (e.g. a roadmap's `◀ CURRENT` block) · **Open Actions / Active Issues as a true index — OPEN rows only** · the **Evidence manifest** · the next-session agenda · the Session Log **header + totals line** | **Every `/orient`, in full** |
+| **WARM** (below the marker) | All dated **Decisions** entries · Session Log **rows** · Backlog · Parked · closed-version one-liners · compaction markers | **On demand only** — when a session actually needs that history |
+
+### The three rules that keep the hot zone hot
+
+1. **A hot row is an index entry, not an argument.** Cap each open row at **~3 lines**: ID · one-line statement of the issue/action · owner + status · **a pointer** to the dated Decision entry or Build Brief that holds the full reasoning. *The reasoning is never deleted — it is relocated to where reasoning lives.* **Before cutting a row, verify its reasoning exists somewhere else** — if the row is the *sole* home of it, move the reasoning into a dated Decision entry first, then cut the row (kernel §11: nothing is lost to a tidy-up).
+2. **Closed rows leave the hot zone at close.** A row that reaches Done/Closed moves **verbatim to `Archive - [PROJECT].md`** at that offload — not at the next ~250-line compaction. Supersede-never-delete is untouched: the Archive is the destination, not deletion.
+3. **Compilation is paid at write time, not read time.** Keeping the hot zone lean is **`/offload`'s** job, every session — see `kernel/OFFLOAD.md`. `/orient` does no maintenance; it just reads less. *(This is the pattern every high-adoption memory system converged on — compiled layer, append-only trail, tiny boot index. Evidence: `Research - 0.7-14 Token Architecture - SB Product.md`.)*
+
+### The Evidence manifest — fix the epistemics, not the discipline *(built 14 Jul 2026, SB Product 0.7-15 · M3)*
+
+A **compiled index of what exists and where**, maintained at every `/offload`, living in the hot zone — so it is in context on **every** `/orient`, at zero marginal cost.
+
+```
+## Evidence
+- Meet Recordings/: 5 install transcripts (Samantha 29 Jun → Gunawan 10 Jul), verbatim + timestamped
+- Alfa NDA: Shannon = Paramount (Introduction to Alfa Medicus - Brand Deck.pdf, same folder)
+```
+
+**Why it exists.** On 14 Jul 2026 a design was gated on a workflow leg declared *"unproven"* — while **five fully-transcribed install calls had been sitting in the mount for weeks.** The claim was not a reasoning failure. **The fact was simply nowhere in context**, and checking it required a search nobody thought to run. A rule telling the model to search harder does not fix that; **a line already in front of it does.** An absence-claim then collides with the evidence *passively, at read time*, before it is ever spoken.
+
+**Rules:**
+
+- **One line per source.** What it is, what it contains, where it lives. It is a **map, not a copy** — never paste the evidence itself.
+- **Written at `/offload`, by the session that learned the fact.** Same discipline as every other hot-zone row: the compilation cost is paid once, at write time, by the session with the context (kernel `OFFLOAD.md`).
+- **It lives or dies on the hot-zone budget.** The manifest counts against the **≤8K hot-zone ceiling** like everything else above the marker. If it grows past its keep, it is not earning its slot — cut it back to what a session would actually be wrong without.
+- **It covers presence and absence far better than attribution.** Stated plainly because the failure it is weakest against is real: `profile/People-web.md` **already held** the "Shannon = Paramount" fact on 14 Jul, and **was not consulted.** A map only helps if it is loaded — which is precisely why this one lives hot instead of one read away.
+
+### Guarantees that survive the split
+
+- **Nothing parked is lost.** The Backlog moves warm, but its surfacing rule is unchanged: it is read deliberately at an explicit event (a gate opening, a roadmap review), and the hot status paragraph carries the cue. Warm ≠ forgotten; warm = read when it matters.
+- **Fail open, never halt.** Marker missing, duplicated, or hot zone malformed → **read the whole file exactly as before** and flag it in one line in the orientation report. Never a halt, never a silent self-repair (kernel §10 — detect and surface). A dangling index pointer → flag that row, don't block the session.
+- **The gates are untouched.** Access, freshness, and the Noticeboard drain run exactly as specified in `ORIENT.md` — this split changes *how much is read*, never *what is verified*.
+- **Mid-session, read what you need.** A session that needs history reads that section (search / offset), not the whole file by reflex.
 
 ---
 
@@ -64,6 +121,7 @@ The cold layer carries the same guarantees as the live one: exactly one per proj
 - **Verbatim relocation, no rewriting.** Entries move whole, newest-first in the archive. Nothing is summarized away — quality is preserved because this is relocation, not compression.
 - **Leave a marker** in the live log where entries left: `*Compacted [DD Mon YYYY]: N entries → Archive - [PROJECT].md*`
 - **Trigger is size, not time** — when the live log passes ~250 lines, `/offload` compacts.
+- **Closed rows go on close, not on the threshold** *(added 14 Jul 2026, 0.7-14).* An Open Action / Active Issue row that reaches **Done** moves to the Archive **at that same offload**, verbatim — it does not sit in the hot zone waiting for a compaction to notice it. Its outcome lives on in the dated Decision entry that resolved it, which is where a reader looks anyway. *(Why: the hot zone is the boot index. A Done row costs a read on every future `/orient` forever and answers no question the Decisions entry doesn't answer better. The ~250-line trigger governs the **warm** narrative; closed rows are governed by their own status.)*
 - **Auto-execute, notify, ask only on ambiguity.** Offload relocates the clearly-spent entries itself and reports a one-line notice (`Compacted N entries → Archive`) — no approval gate. It pauses for a yes/no **only** when an entry's status is genuinely unclear (standing-or-spent ambiguous). Moves are verbatim and reversible, which is what makes auto-by-default safe; the one-line notice preserves the trace.
 
 ---
@@ -72,9 +130,11 @@ The cold layer carries the same guarantees as the live one: exactly one per proj
 
 A countable record of every session on the project: how many, roughly how many hours, and a one-line trail of what each one did. Its job is **motivation made visible** — the user can see the project being built across time — and a lightweight history alongside the decisions.
 
-- **`/orient` opens the row** at session start: append a new line with the date and start time (user's local timezone), end left blank.
-- **`/offload` closes the row** at session end: fill the end time, compute `~Hrs`, write the one-line summary, and update the running total at the top of the section.
-- **Oldest-first — append at the bottom.** This is a deliberate exception to the newest-first convention everywhere else: the ledger reads as a build history, and the last row number *is* the session count.
+- **The section straddles the marker** *(0.7-14).* Its **header, `**Totals:**` line, and the table's column-header + separator rows sit HOT** (so every `/orient` sees "N sessions · ~H hours" without reading a single row, and so Step 6 has a well-formed append target inside its read window); the **data rows sit WARM**, immediately below the marker. Step 6 anchors its insert on the separator row + the marker — both of which it has read — and writes the new row directly beneath the marker.
+- **`/orient` opens the row** at session start: insert a new row directly under the marker with the date and start time (user's local timezone), end left blank.
+- **`/offload` closes the row** at session end: fill the end time, compute `~Hrs`, write the one-line summary, and update the `**Totals:**` line.
+- **Newest-first — insert directly below the marker** *(changed 14 Jul 2026, 0.7-14; supersedes the old "oldest-first, append at the bottom" rule).* **Why it changed:** the old rule put the append target at the very bottom of the file — the one place a hot-zone read can never see — so Step 6 could not open a session without reading the whole log, which is the exact cost this split exists to remove. Newest-first puts it at the boundary, one line below the marker. **The consequence to know:** the last row number is no longer the session count — **the `**Totals:**` line is** (and it is hot, so it is always in hand). `/offload`'s "reopen the most recently closed row" branch means the **topmost** row. *(Caught at the cold `/review` of this very build: the first version of the split left both ordering rules standing and would have inserted a row above the table header — malformed markdown on the first post-split orient of every install.)*
+- **The `unaudited` marker** *(0.7-15).* If the offload auditor did not run (spawn loss — ~1 in 6), the row carries the literal marker `unaudited` in its summary. It is never omitted to keep the row tidy: a row that doesn't say it was unaudited is claiming it was audited. *(It does not propagate to `profile/Scoreboard.md` — that counts work, not confidence.)*
 - **Hours are approximate, by design.** A session closed without `/offload` never gets an end stamp — leave its `End` and `~Hrs` as `—` and don't count its hours (still count the session). Never present the total as precise; it's a sense-of-progress number, not a timesheet.
 - **The running total is never reset.** On compaction, old rows relocate to the archive verbatim but the `N sessions · ~H hours` total carries forward in the live log.
 - **Reopen, don't renumber** *(built 06 Jul 2026 — fixes a live mislabeling: a session that ran `/offload`, then kept going in the same sitting with no fresh `/orient`, got split into two numbered rows).* **A session number is minted in exactly one place — `/orient` Step 6.** Nowhere else ever invents one. The test is not "is the last row's End blank" (that can't be read off the file alone — a genuinely new sitting that deferred Step 6 also shows the last row already closed). The test is **what happened in *this* sitting**, so it has three branches, not two:
@@ -101,5 +161,5 @@ A countable record of every session on the project: how many, roughly how many h
 | Protocol | Action |
 |----------|--------|
 | `/new-project` | Creates it from this template, seeds Open Actions with the session's next steps |
-| `/orient` | Reads it; verifies exactly one; surfaces Open Actions; appends any `[from Noticeboard]` rows drained by Step 2.5; **opens a Session Log row (start time) and shows the running total** |
-| `/offload` | Appends decisions and updates Open Actions in place; **closes the Session Log row (end time, ~hrs, summary) and updates the total**; auto-compacts (one-line notice, asks only on ambiguity) when the live log passes ~250 lines |
+| `/orient` | Reads the **hot zone** (down to the marker; full-read fallback + flag if the marker is broken); verifies exactly one; surfaces Open Actions **tagged per §13**; appends any `[from Noticeboard]` rows drained by Step 2.5; **opens a Session Log row (start time) and shows the running total**; posts the session beacon. Does **no** maintenance. |
+| `/offload` | Appends decisions (warm) and updates Open Actions in place (hot, ~3-line cap); **updates the Evidence manifest** (hot); **closes the Session Log row (end time, ~hrs, summary, `unaudited` if the auditor didn't run) and updates the totals line**; **moves Done rows to the Archive**; keeps the marker intact; auto-compacts (one-line notice, asks only on ambiguity) when the warm narrative passes ~250 lines; clears the session beacon |

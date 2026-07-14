@@ -1,6 +1,8 @@
 # PRE-FLIGHT — four things to have ready before we start
 
-*This takes about ten minutes and it removes the snags that eat the first twenty minutes of most setups. Do it **before** the call (or before you paste the bootstrap prompt). Don't just tick the boxes from memory — actually open each thing and look. Every item below is something you can **see on your screen**, not something you think is probably fine.*
+*This takes about ten minutes and it removes the snags that eat the first twenty minutes of most setups. Do it **before you paste the bootstrap prompt**. Don't just tick the boxes from memory — actually open each thing and look. Every item below is something you can **see on your screen**, not something you think is probably fine.*
+
+*You can do all four on your own — that's how this is meant to be done.*
 
 ---
 
@@ -44,13 +46,21 @@
 
 ## 4. The kit — downloaded and **unzipped** on your computer
 
+**Download the right file.** On the release page you'll see two downloads. Take the one named exactly:
+
+> **`second-brain-kit-v0.7.zip`**
+
+**Not** the one called **"Source code (zip)"** — that's GitHub's own automatic download, it unpacks into the wrong shape, and it is the single most common install snag we see. If you took the wrong one, delete it and download the named file again.
+
 **Check it:** you have a folder named **`ROOT`** sitting on your computer, and opening it shows **three folders inside — `kernel/`, `profile-templates/`, `skills/`**. Not a `.zip` file. Not still sitting zipped in your Downloads.
+
+**There is only ever ONE `ROOT` folder.** If you end up with two — a `ROOT` inside another `ROOT`, or a second folder with a similar name sitting beside it — **delete the extra one**. A doubled kit looks installed and breaks the moment it runs.
 
 **You're ready when:** you can open `ROOT` and see those three folders with files inside them.
 
-**If not:** find the **`.zip`** you were sent and unzip it — double-click it (Mac), or right-click → **Extract All** (Windows) — so you get the `ROOT` folder. **Don't drag it into Drive yet** — we do that together, once, in the right way. (Copying a folder *inside* the Drive website doesn't work cleanly; unzip-on-your-computer-then-drag is the reliable path.)
+**If not:** find `second-brain-kit-v0.7.zip` in your Downloads and unzip it — double-click it (Mac), or right-click → **Extract All** (Windows) — so you get the `ROOT` folder. Then **drag that `ROOT` folder into your Google Drive folder on your computer** (`START-HERE.md` step 2 shows you exactly where). *Do not try to "copy" a folder inside the Google Drive **website** — Drive can't copy folders cleanly, and that's where most people get stuck. Unzip-on-your-computer-then-drag is the reliable path.*
 
-*Why it matters: a half-unzipped or double-nested kit is the other silent failure — it looks installed but breaks the moment we run it.*
+*Why it matters: a half-unzipped, wrong-file, or double-nested kit is the other silent failure — it looks installed but breaks the moment we run it.*
 
 ---
 
@@ -61,9 +71,9 @@ All four are true, checked **with your own eyes**:
 - [ ] Claude **desktop app** open, on a **paid** plan
 - [ ] **Google Drive for Desktop** installed and showing "up to date"
 - [ ] The **same Google account** on Drive *and* on Claude's Drive connector
-- [ ] The **`ROOT`** folder unzipped on your computer, three folders inside
+- [ ] The **`ROOT`** folder — from `second-brain-kit-v0.7.zip`, unzipped, three folders inside, and only one of it
 
-*Two small things we'll handle together during setup, so don't worry about them now: choosing the faster model (Sonnet), and marking `ROOT` "available offline" so Claude can edit inside it. You'll be walked through both.*
+*Two small things Claude handles with you during setup, so don't worry about them now: choosing the faster model (Sonnet), and marking `ROOT` "available offline" so Claude can edit inside it. It walks you through both.*
 
 ---
 

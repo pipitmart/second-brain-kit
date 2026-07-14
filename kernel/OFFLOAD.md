@@ -14,6 +14,35 @@ There is no background timer in a chat — Claude acts on turns. So "save often"
 1. **Save-on-decision.** The moment a decision is made or confirmed, append it to the Decisions Log. You never lose more than the last exchange.
 2. **Checkpoint prompts.** At natural breakpoints, before context gets long, and at session end, offer to offload. Don't nag every turn — prompt when there's unsaved material of substance.
 
+### Blocker claims are decisions *(built 14 Jul 2026 — SB Product 0.7-15, kernel §13)*
+
+A **blocker** claim — *can't-because · doesn't-exist · unproven · not-found · nothing-there* — is not an observation. **It is a decision**, because it redirects work: it gates a design, closes a path, or tells the user to stop. Save-on-decision therefore binds it.
+
+**The rule:** a blocker claim entering **any SSOT or design doc** renders in **exactly one of two legal forms** — the same two §13 gives every falsifiable claim:
+
+> ✅ **Attempt inline** — the tool call actually run, and what it returned. Not the reasoning; the *attempt*.
+> `Leg 4 is unproven — no transcripts found (checked: search_files "Meet Recordings", 14 Jul, 0 results).`
+>
+> ✅ **The literal marker `unverified`** — an honest admission that no falsification was attempted.
+> `Leg 4 is unproven — unverified; no search run.`
+>
+> ❌ **The naked third form — malformed.** A blocker asserted as fact with neither an attempt nor the marker.
+> `Leg 4 is unproven, so the design gates on it.`
+
+**Only the naked third form is malformed**, and the offload auditor (below) treats it as an **automatic flag** — no judgment call required, so it cannot be argued away.
+
+**What the auditor does with each form** *(stated because this is the auditor's one no-judgment trigger, and an ambiguous trigger is no trigger):*
+
+- **Attempt inline** → the auditor **re-runs it**. Does the named tool/file actually return what the entry says it returned?
+- **`unverified`** → **legal, but the auditor runs the falsification the entry admits it skipped.** The marker buys honesty, not exemption: a blocker is a *decision*, and a decision resting on an un-run search is exactly what the auditor is for. If the search comes back non-empty, that is a finding.
+- **Naked** → automatic flag, no reading required.
+
+*Why `unverified` is legal here at all:* the alternative is a rule the model routes around by simply not writing the blocker down — which converts a hard, auditable surface back into the unenforceable speech class. **An honest naked-but-marked blocker is strictly better than a blocker that hides in the chat.**
+
+*Why this surface and not "before speaking any claim of shape X":* a speech rule is unenforceable — there is no mechanical surface between token generation and the user's eyes inside the fence (§13). **The write is small, well-defined, and already instrumented.** This catches the mid-session assertions that *redirect work*, which is the class that does the damage.
+
+*Accepted failure mode, named:* a blocker that steers a session **verbally** and is never written **escapes this rule entirely** — but such a blocker also **dies with the session**. Bounded harm, accepted deliberately. It is caught, if at all, by §13's chat-side tag, which is soft by construction.
+
 ---
 
 ## Access gate
@@ -51,6 +80,21 @@ To `Decisions Log - [PROJECT].md` (via `kernel/SSOT-TEMPLATE.md` format), **edit
 - **Session Log** — three branches, by what happened in *this* sitting (full rule + rationale: `kernel/SSOT-TEMPLATE.md → Session Log`): **(1)** `/orient` ran and opened a row this sitting → close it normally (end time, `~Hrs`, summary, running total). **(2)** `/orient` ran but Step 6 was deferred (a quick-question session) → mint Step 6 now, open-and-close in the same motion — still a new number. **(3)** `/orient` didn't run at all this sitting (continuing past a prior close, no fresh load) → never mint a new row; reopen the most recently closed one instead (extend end time, recompute `~Hrs`, append the new work as a marked continuation). Mirror whichever branch fired into the project's separate Session Ledger too, if it has one — the two must never drift apart. Numbering itself is `/orient` Step 6's job alone; `/offload` never invents a number, only decides which of the three branches applies.
 - **Header stamp (required, every offload) — REPLACE, never append (file-diet rule, 0.7-2, 06 Jul 2026).** Update the Decisions Log's top `**Last updated:**` line to **one line only**: this session's date + session number + a single-sentence outcome. This line is the SSOT's **freshness stamp** — a reader (or a not-yet-synced Drive web view) compares it against the latest content to know if they're looking at a current copy. A stale stamp silently defeats that check, so it is never optional: if you wrote anything to the log this session, you bumped the stamp. **Never chain a `*(prior: ...)*` history onto this line** — that narrative already lives in `## Session Log` (this file, permanent) and the project's WARM `Session Ledger` (if it has one), so repeating it here is the exact triplication the file-diet decision named. If the stamp you're replacing already carries an accumulated chain, this offload is also the moment to prune it back to one line — don't extend a chain that's already too long. *Why: a header meant to answer "is this copy current?" ballooned into a second full narrative history at the top of the file, read in full on every single `/orient` regardless of whether the history was needed — pure token cost with no reader benefit the Session Log doesn't already provide.*
 
+### Hot-zone maintenance — the compilation step *(built 14 Jul 2026 — SB Product 0.7-14)*
+
+The SSOT is split into a **hot zone** (read by every `/orient`) and a **warm trail** below a marker line — full spec: `kernel/SSOT-TEMPLATE.md → The hot/warm split`. **Keeping the hot zone lean is offload's job, not orient's.** The cost of a tidy index is paid **once, at write time, by the session that has the context to do it** — instead of being paid again by every future session that has to read the mess.
+
+Every offload, on the rows it touches:
+
+- **Cap the row it writes at ~3 lines** — ID · one-line statement · owner/status · **a pointer** to the dated Decision entry or Build Brief holding the reasoning. Write the reasoning **into the Decisions entry** (warm, where it belongs and where it is read on demand); never into the row. An open row is an *index entry*, not the argument.
+- **Move Done rows to `Archive - [PROJECT].md`, verbatim, at the offload that closes them** — not at the next ~250-line compaction. Their outcome already lives in the dated Decision entry that resolved them.
+- **Never touch the marker line.** It is a fixed literal interface; if it is missing or duplicated, say so in the closeout rather than silently regenerating it.
+- **Only the row you touched.** Offload is not a licence to re-cut the whole index — an over-long row that this session didn't touch is a flag, not a chore. *(A whole-file rewrite is also exactly what the shared-write rule forbids — kernel §4.)*
+
+**This is net less writing, not more** — offload's own ≤30s bar is served by it, not taxed: the row it would have written long, it writes short, and the reasoning goes to the entry it was writing anyway.
+
+**Lazy migration.** A project whose SSOT predates the split keeps working unchanged (`/orient` fails open and full-reads it, with a one-line flag). It restructures at **its own next offload** — the session that has the context, under the rules above. No big-bang, and no session ever restructures a project it cannot read (the mount wall).
+
 ### The metric — float up, then roll up *(built 12 Jul 2026 — SB Product 0.7-1)*
 
 The system measures itself with three numbers: **projects · sessions · hours**. Two files, one direction of travel — **the project's counters float UP into the index; the Scoreboard only ever ROLLS UP the index.** No number is ever held in two places.
@@ -78,9 +122,19 @@ If the session produced an action or decision **another project must act on**, n
 - **The tag comes from the target project's `Noticeboard tag` column in `profile/PROJECTS.md`** — stored, never guessed from the project name. No row or no tag → ask, don't invent (kernel §11).
 - **One tag per line.** A note for N projects = N lines, one per target. *(The drain hard-deletes whole lines — a shared line would vanish for the second project the moment the first drains it.)*
 - **Freshness-check `Noticeboard.md` immediately before the write** — same rule as every other offload write (above).
+- **Own lines only, against a just-re-read board** *(shared-write rule, kernel §4 — added 13 Jul 2026)*: ROOT is mounted in every session, so another session may be writing the board at the same moment. **Add new lines freely; edit only lines this session owns** (its own project's pins, or updates to its own earlier notes); **never rewrite the whole file** — a whole-file write from a copy read earlier in the session silently destroys whatever another session pinned or drained in between (lost update). Confirm the write landed (cloud `modifiedTime`).
 - The target's `/orient` Step 2.5 does the rest: appends to their SSOT `[from Noticeboard]`, confirms, deletes the line. The board is a channel, not a record — it stays short by design.
 
 *Why: cross-project closes that traveled by memory have already failed silently (30 Jun 2026 — a git-LICENSE close never reached the SB record and re-surfaced as phantom work). The pin is the single write channel that crosses the mount/privacy wall.*
+
+## Clear the session beacon *(built 14 Jul 2026 — NB-23; pairs with `ORIENT.md` Step 6)*
+
+`/orient` Step 6 posted this session's beacon to `profile/Noticeboard.md → ## Session beacons`. **Offload's last write is to remove it** — its own line, and only its own line (the shared-write rule, kernel §4: re-read the board immediately before the edit, delete the one line this session owns, confirm the write landed).
+
+- **If the delete fails, say so in the closeout** and move on — a stale beacon is *advisory only* and blocks nothing. It is presumed dead after **12 hours** by any reader.
+- **Never clear a beacon belonging to another project**, however old it looks. A beacon past 12h is **ignored, not deleted**. The two clearers, and there are only two: **the session that set it** (here, at close), and **the next `/orient` in that same project**, which sweeps its own project's stale line if a previous session died without clearing. No session ever touches another project's line — that is the shared-write rule (kernel §4), and a beacon is not an exception to it.
+- A session that ends without `/offload` leaves its beacon behind by design. That is the accepted cost of a mechanism that must never block work.
+- **No beacon to clear? Say nothing and move on.** Session Log branch 3 (work continuing past a prior close, no fresh `/orient`) reaches offload with its beacon already cleared — that is not an error. Branch 2 (Step 6 minted late, at offload) posts and clears in the same motion, or simply skips both; either is fine, and neither is worth a line in the closeout.
 
 ---
 
@@ -95,7 +149,7 @@ If the session produced an action or decision **another project must act on**, n
 
 ## Compaction (live → cold)
 
-When the Decisions Log passes **~250 lines**, compact as part of offload — **automatically, not as a to-do:**
+Compaction governs the **warm narrative** (dated Decisions entries). *Closed **rows** are not its business — they leave the hot zone the moment they close, under the hot-zone maintenance step above.* When the Decisions Log passes **~250 lines**, compact as part of offload — **automatically, not as a to-do:**
 
 1. Sort entries **by status, never by age**: spent (superseded decisions, Done actions, closed notes) vs standing (conventions and rules still binding — these never move).
 2. **Auto-relocate the clearly-spent entries verbatim** to `Archive - [PROJECT].md` (create it on first compaction), newest-first; leave the marker in the live log: `*Compacted [date]: N entries → Archive*`.
@@ -140,6 +194,50 @@ If the session produced something reusable beyond this project (a convention, a 
 - **Everything else** → pin it to the Noticeboard (section above), tagged for the project that owns that kind of change. No owning project in `profile/PROJECTS.md` → park it as a candidate in **this** project's SSOT and say so — never invent a tag (kernel §11).
 
 The promotion itself happens in the owning project's own session, gated as usual. One channel crosses the mount wall; this section no longer grants a second. *(The mirror, deepening answers, and the `PROJECTS.md` row update are person-layer / structural writes with their own designed pipelines — they are not cross-project information and stay as they are.)*
+
+---
+
+## The offload auditor — cold, at close *(built 14 Jul 2026 — SB Product 0.7-15, kernel §13)*
+
+The kernel's §13 guarantee — *no falsifiable claim survives its own session's offload unexamined* — is **this step**. It is the only hard back-stop in the system, and it exists because the enforcer **cannot be the writing model's own attention**: on 14 Jul 2026 the very session convened to fix this defect committed it again, mid-design, and was caught by an independent reader rather than by itself.
+
+**Spawn a cold sub-agent** — no inherited context, and a **different model where one is available**. It gets the staged text and the file paths, nothing else.
+
+### Order of operations
+
+**Stage the writes → audit → write → confirm → closeout.** The auditor reads the diff *about to be written*, not the file after the fact — a flag it raises is cheaper to fix before the write than after.
+
+**Scope is EVERYTHING this session wrote or is about to write — not just the closing diff.** Save-on-decision (above) means a session appends to the SSOT *throughout*, so by offload those entries are already in the file and would sit outside a diff-only audit. **They are in scope.** §13's guarantee is that no falsifiable claim survives **its own session's offload** unexamined — a claim written at 21:00 and audited against nothing at 23:00 would break that guarantee while appearing to honour it. Hand the auditor the session's **full set of writes**, mid-session appends included. *(Caught at the cold `/review` of this build — the first draft scoped the audit to the closing diff and would have let every save-on-decision write through unread.)*
+
+### Its job — "is this true," not "was this checked"
+
+It **cannot** see whether the parent verified anything, so it never asks. It **independently re-verifies falsifiable claims against actual state**: reads the source doc, searches the folder, opens the transcript.
+
+**Scope — bounded, and the bound is binding:**
+
+- the **SSOT diff** about to be written
+- the **closeout's surfaced actions** (a §12 action listed as still-open is a *status* claim — this is exactly where the "delete the spec file he had already deleted" failure fired, and one `search_files` would have killed it)
+- every **§13-cited** claim — does the named file actually say what the citation claims?
+- every **blocker** entry — was a falsification actually attempted, or is the entry malformed?
+
+**It does NOT adjudicate judgment, strategy, or the user's calls.** It has authority over nothing that isn't decidable against a reachable file. **It reports; it never rewrites** — same posture as `/review`. Its findings come back to the parent, which fixes them *before* the write and says so in the closeout.
+
+### Fail-open, loudly — the `unaudited` flag
+
+Sub-agent spawn loss is **~1 in 6** *(observed 13 Jul 2026 — **one** leg lost out of a six-spawn batch. Stated as a rate, but the evidence is a single sample of six: treat it as "spawn loss is real and non-rare," not as a calibrated probability.)* A fail-**closed** audit would block roughly one offload in six, which is indefensible against the adoption red line.
+
+**On spawn loss or auditor failure: the offload proceeds** — and it says so, in **two** places:
+
+1. the **session closeout**, as a visible line: `⚠️ unaudited — the offload auditor did not run; nothing in this session's writes was independently re-verified`
+2. the **Session Log row**, as the literal marker `unaudited`
+
+**Roughly one session in six will ship unaudited, and every one of them must say so out loud.** A silent skip would re-create the exact shape this whole issue exists to kill — *an automated check reported nothing, and the human supplied the missing evidence.* Silence is never evidence of a clean audit.
+
+**It does not propagate to `profile/Scoreboard.md`** — the Scoreboard counts work, not confidence.
+
+### ⛔ No auditor at `/orient`
+
+Deliberate, and it stays that way. The spawn floor plus the 1-in-6 loss rate means an agent at the orient door **adds latency to every session** against a live ≤30s acceptance bar. Orient's §12 verification stays **in-parent tool calls**, bound to custom doors by the README-first rule. *(The first draft of this design put an auditor at orient — contradicting a call made the previous night. A cold reader caught it. Noted here so nobody re-proposes it without knowing that.)*
 
 ---
 

@@ -65,6 +65,7 @@ Full definitions: `kernel/GLOSSARY.md`.
 - **Never use the Drive MCP `create_file` on a doc that already exists** — it spawns a duplicate and breaks the SSOT. The Drive MCP is for **read/search only**.
 - **Streaming vs Mirror — what actually works (tested 11 Jun).** The native file tools reach Drive through the Windows API, so they work in **either** mode — the entire SB machinery (orient, offload, genesis, new-project, every markdown edit) runs fine on plain **Streaming** with nothing downloaded. **Available offline changes nothing for the sandbox** — with the whole Drive pinned offline, bash still saw empty folders. Reason: the streaming drive (`G:`) is a *virtual/projected* filesystem; the bash sandbox can't enumerate or read it, and its writes land in a throwaway overlay that never reaches Drive. **Code/data skills (pdf, xlsx, docx, python) run through bash**, so they cannot operate directly on a Streaming Drive folder. Two ways to run them against Drive content: **(a) Mirror mode** — My Drive becomes a real `C:\Users\<user>\My Drive` folder the sandbox reads normally (costs whole-Drive disk); or **(b) stay on Streaming and route I/O through the sandbox** — read inputs with native Read, work in the sandbox scratch dir, deliver the finished file with `present_files` (or native Write back into the Drive folder). Never assume bash can see a Streaming Drive path. *(Also on Streaming: Claude can create a Drive file via native Write but cannot delete it — no native delete, and bash can't see it to remove it.)*
 - **Discipline:** let Drive finish syncing (no spinner) before switching machines; never edit the same file on two machines at once, or Drive makes a conflicted copy.
+- **Two sessions on ONE machine are the same hazard** *(added 13 Jul 2026)*. ROOT is mounted in every session by design (§7a), so concurrent sessions are all live writers to the shared ROOT files (`profile/Noticeboard.md`, `profile/PROJECTS.md`, `profile/Scoreboard.md`) — and no session knows another is running. A read → modify → write from a copy read minutes earlier silently overwrites whatever another session wrote in between (lost update). **The rule, stated once here and pointed to from `ORIENT.md` Step 2.5 / `OFFLOAD.md`: before writing any shared ROOT file, re-read it immediately — never write from a copy read earlier in the session; add or edit only lines/cells your session owns, never rewrite the whole file; confirm the write landed (cloud `modifiedTime`).** **A session-presence mechanism — the beacon — is now BUILT** *(14 Jul 2026, **on the user's call**. Stated precisely, because the section it sits in forbids a generous reading of the record: the beacon's written revive trigger was **first observed real loss**, and **no loss has ever been observed** — every concurrency event to date, including the 14 Jul cross-session write to a shared SSOT, was a **near-miss stopped by hand, mid-turn**. That near-miss is why it was revived; it is not the trigger firing. The distinction is the difference between "the mechanism proved itself necessary" and "a human decided not to wait for the loss" — and only the second is true.)*: `/orient` Step 6 posts a line to `profile/Noticeboard.md → ## Session beacons`, `/offload` clears it, and any session about to write a shared ROOT file reads it first. **It is advisory and never blocks** — a session that dies without `/offload` leaves its beacon behind, so a beacon older than **12 hours is presumed dead** and ignored. The prose rules above remain the guardrail; the beacon only tells a session that it is *not alone*, which prose can never do.
 
 *This rule is model-agnostic — it binds whether Claude runs as Opus, Sonnet, or any other model.*
 
@@ -173,6 +174,49 @@ This rule applies at every point actions are listed or mentioned: orient, mid-se
 The default assumption is *it may be done*. The burden is on Claude to check, not on the user to remember to report.
 
 *Why: the system's job is to surface real work, not to re-generate tasks the user already completed. Every phantom action is a small trust failure — and they compound.*
+
+---
+
+## 13. Verify before you assert — cite-or-mark *(built 14 Jul 2026 — SB Product 0.7-15)*
+
+§11 and §12 say *don't guess*. They were **loaded in context** on 14 Jul 2026 when five failures fired anyway — four of them the same defect:
+
+> **Claude asserted a claim it could have falsified with one tool call, and didn't.**
+
+The user's own preservation SOP says it outright: *"'Be more careful' is not a guardrail; a tool that **can't** do harm is."* So this section does not add a sixth rule telling the model to be careful. **It changes the shape of the artifact**, and puts a mechanical reader behind it.
+
+### The rule
+
+**Four claim-shapes are falsifiable — absence · presence · actor · status.** Any claim of one of those shapes renders in **exactly one of two forms**, in **both the chat output and any file this session writes**:
+
+- `(checked: <file or tool>, <when>)`
+- the literal marker `unverified`
+
+**A claim carrying neither is malformed on its face.** Examples: *"there are no transcripts in that folder"* (absence) · *"the spec file still exists"* (presence) · *"Shannon signs the NDA"* (actor) · *"that action is still open"* (status).
+
+**One carve-out, and only one: the Evidence manifest.** Its whole body is presence claims by construction, and tagging every line would double a section whose entire value is being cheap enough to sit in the hot zone forever. **The manifest is a map of what a session verified when it wrote the line, and the section header carries the rule** — individual lines tag only where the provenance is *surprising* or the fact was hard-won. Nothing else in the system gets this exemption.
+
+### Why this shape and not another rule
+
+The model asserts absences confidently because **absence-from-context is indistinguishable from absence-from-the-world** — and by the time the guess is a sentence, it no longer feels like a guess. There is no experienced decision point. **The tag manufactures one**, at the cheapest possible location: to write `(checked: …)` you must name your evidence, and naming forces the question. Cost: ~zero tokens, zero latency.
+
+It also changes the user's job. Catching these currently requires **knowing the ground truth** — which is how all five were caught, and which is unscalable and squarely against the adoption red line. Catching a **missing tag** requires no domain knowledge at all.
+
+**Stated adversarially, because it must be:** the model can confabulate a citation. But **a cited guess names a specific file — and `/offload`'s auditor reads that file. A naked guess hides; a cited guess is falsifiable.** That asymmetry *is* the mechanism, and it is why this prose has a back-stop rather than being another thing to remember.
+
+### The guarantee — these words, not a paraphrase
+
+> **This mechanism does not prevent a false claim from being spoken. It guarantees that no falsifiable claim survives its own session's offload unexamined, and that no claim is ever silently naked.**
+
+**Nothing inside the product fence can prevent a false claim from being spoken** — Cowork fires no hooks, offers no output filter or streaming tap; sub-agents block the turn and cannot watch a live parent; scheduled tasks run in fresh sessions. That was tested, not assumed *(cold-model structural pass, 14 Jul 2026)*. So the target is not *prevent the claim* — it is **make it impossible to make one silently.** That kills **cross-session propagation**, which is §11's actual stated threat, and it claims nothing more. **Honest coverage of the four incidents: 2 hard · 1 conditional · 1 soft.** Never round that up — this section binds the description of itself.
+
+### The three surfaces this binds
+
+1. **Speech (soft).** The tag, in chat. Enforced by nothing but visibility — which is the point: a naked claim is now *visibly* naked to a reader who knows nothing about the subject.
+2. **The write (hard).** A blocker/absence claim entering an SSOT or design doc must carry its falsification attempt inline — `kernel/OFFLOAD.md → Blocker claims are decisions`. An entry without one is **malformed**.
+3. **The audit (hard).** A cold sub-agent at `/offload` re-verifies falsifiable claims against actual state — `kernel/OFFLOAD.md → The offload auditor`. It asks *"is this true,"* not *"was this checked."*
+
+**This binds every session-opening and session-closing protocol, custom ones included** (the NB-4 precedent — see `ORIENT.md`'s README-first rule). A custom door that skips it re-opens exactly the failures it exists to kill.
 
 ---
 

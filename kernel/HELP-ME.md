@@ -25,7 +25,17 @@ Diagnose → propose the **smallest** fix → user approves or executes → veri
 ### A4. Restore
 Return to the snapshot. Resume the prior task at the exact step it stopped. The user should feel the detour cost minutes, not the thread.
 
-*The A1–A4 skeleton must live inside the installed skill itself, not only in this file — so it survives Drive being down.*
+### A5. Close out — offer to tell the maker *(added 13 Jul 2026 — 0.7-3)*
+Once the work is moving again, **offer once, in one line:** *"Want me to send this to the maker? I'll draft it — you read it before it goes."*
+
+- **Only after the problem is resolved or worked around** — never mid-fix. The user's problem is the priority; the maker's backlog is not.
+- **The user must say yes.** Silence, a shrug, or "later" = no. Never re-offer in the same session.
+- On yes → **`kernel/FEEDBACK.md` → Mode B.** Claude drafts the report from what it *observed this session* (symptom · repro · environment · outcome), runs the **privacy scrub** (no file contents, no *user* file names, no project names, no client or person names — a user's project names leak their clients; **kit file names like `ORIENT.md` are fine and usually necessary**), shows the draft, and hands over one link. **Claude never submits for them.**
+- **Never ask for a repo star on the back of a problem** (`FEEDBACK.md` → *The stars ask*).
+
+*Why it's an offer and not a step: the user came here stuck, not to file a ticket. But the problems real users hit are the only honest source of what to fix next — and a fixed problem that nobody reports is a problem the next user hits too.*
+
+*The A1–A4 skeleton must live inside the installed skill itself, not only in this file — so it survives Drive being down. **A5 deliberately does not:** it needs `FEEDBACK.md` (the form, the field map, the scrub), which is unreachable in exactly the case the embedded core exists for. If Drive is down, fix the thing; the report can wait until the system is back.*
 
 ---
 

@@ -10,6 +10,16 @@
 
 ---
 
+## Session beacons
+*Live sessions. `/orient` Step 6 posts its line here; `/offload` clears it. **Advisory only — a beacon never blocks work.** Another project's beacon means: re-read before every shared-ROOT-file write, prefer append, never delete a line you don't own. A beacon older than **12 h is presumed dead** (a session that crashed without `/offload`) and ignored — never delete another project's, stale or not. The drain never touches this section.*
+
+*(none — no session currently open)*
+
+## Standing notes
+*Read by every session; the drain must NOT delete these. Only the project that pinned one retires it.*
+
+*(none yet)*
+
 ## Open notes
 
 *(none yet — the first time one project needs another to act, `/offload` pins it here)*
