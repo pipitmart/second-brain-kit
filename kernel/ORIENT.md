@@ -29,6 +29,8 @@ Only **Step 6** (the session-row *write*) is ever deferrable — e.g. to avoid a
 
 ## Step 0 — Access check *(do this first, every time)*
 
+**First tool call of this sitting, before anything else: read the local clock** (e.g. current date/time) and hold the result as this sitting's real start time — Step 6 writes it into the Session Log row. This is prose, not a mechanism (Cowork fires no hooks; a Claude Code `SessionStart` hook could capture this mechanically on an install that verifies it fires, but that is a personal-layer enhancement, never the shipped kernel), so it can be skipped. When it is, the **orient completeness manifest** (Step 6, below) catches the gap and marks the row's start `unverified`/a floor rather than let a later clock-check get written in as if it were the true start — the exact failure this closes (0.7-16; a mid-orient clock read was once fabricated into a Session Log start time and had to be corrected after the fact).
+
 Before loading anything, confirm Claude can actually operate:
 
 1. **Read access** — can the ROOT folder be reached (via mounted folder or Drive)? Try to read `kernel/CLAUDE-KERNEL.md`.
@@ -211,6 +213,24 @@ In the same turn that opens the Session Log row, **append one line** to `profile
 
 **This is the only place a session number is ever minted** *(built 06 Jul 2026 — fixes a live mislabeling where continued work after an `/offload` close, with no fresh `/orient` in between, got numbered as a new session)*. Even a deferred write (see the Load-first rule above) still mints its number here — just later, at offload, rather than up front. The one case with **no** number to give is when this step never ran at all in the current sitting — see `OFFLOAD.md → Session Log` for what to do instead (reopen the last row, don't invent one).
 
+### Orient completeness manifest *(built 20 Jul 2026 — 0.7-16)*
+
+The offload auditor (`OFFLOAD.md`) asks *"is what was written TRUE?"* Nothing asked *"did orient do everything it OWED?"* — and that gap is exactly what fired, repeatedly: a Session Log start time fabricated from a mid-orient clock check, and the ≤30s duration stamp silently missing five sessions running while its own collection instruction sat in the hot zone, **read every session, and still didn't fire** — the harder lesson: read prose alone wasn't enough, hence a mechanical check. This step closes it — **lighter than offload's**, because orient has no cold auditor and a live ≤30s latency bar (`OFFLOAD.md → ⛔ No auditor at /orient`), so it stays in-parent and cheap.
+
+**Before finishing this orientation, confirm — by direct re-read, not by assumption — that orient's own owed outputs actually landed:**
+
+- **Session Log row** — re-read the row Step 6 just inserted; confirm it is there, directly under the marker, with today's date.
+- **Session beacon** — Step 6 above already confirms this one; nothing new to add.
+- **Duration start-stamp** — was a real clock read taken as the first tool call (per Step 0, above)? If yes, the row's Start time is real. **If it was skipped, or if the only "time" in hand is a clock check that happened mid-orient rather than at the very start, mark the row's Start `unverified`/a floor — never write a mid-session timestamp into the row as if it were the true start** (the fabrication this exists to stop). *(Detects and marks; does not recover — a start time never taken stays gone, per kernel §13's honesty bound. See `SSOT-TEMPLATE.md → Session Log` for the marking rule.)*
+- **Step 0.7 kit-update stamp** — *conditional*: only owed on the sessions where Step 0.7 actually ran (past the 7-day guard). If it ran, confirm the stamp date in `STACK.md` was updated; if it was skipped by the guard, there is nothing to confirm.
+
+**Report one line, always:**
+- Clean → `✅ manifest: N/N confirmed` (folded into the Output table below).
+- A miss → **name exactly which owed item is missing or unconfirmed**, mark the affected Session Log field `unverified` rather than guess it, and say so in the orientation output. Never report the session opened cleanly while one of its own owed writes is unconfirmed.
+- **A legitimate deferral is not a miss.** If Step 6's write was consciously deferred under the Load-first rule (a quick-question, read-only sitting), report it as **deferred**, exactly as that rule already requires — the manifest never turns an intentional, declared skip into a false "unconfirmed."
+
+**What this does not do:** it does not check whether the *content* orient surfaced (open actions, drained notes) is *true* — that is out of scope for a mechanical completeness pass and was never orient's job (§12 already covers action verification). It checks only that the small, fixed set of **mechanical** outputs above actually landed.
+
 ---
 
 ## Output
@@ -231,6 +251,7 @@ Report clearly:
 | Instructions consistent | ✅ / ❌ | Flag contradictions |
 | Key people known | ✅ / ❌ | |
 | Session opened + total shown | ✅ / ⚠️ | Start-time row added; "N sessions · ~H hrs" surfaced (⚠️ if read-only) |
+| Orient completeness manifest | ✅ / ⚠️ | `✅ manifest: N/N confirmed`, or ⚠️ names the missing item — see Step 6 |
 
 **All green** → state what's loaded and what's open. Work begins.
 **Any red** → fix before proceeding. Do not start work on a partial orientation.

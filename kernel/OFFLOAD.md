@@ -241,6 +241,35 @@ Deliberate, and it stays that way. The spawn floor plus the 1-in-6 loss rate mea
 
 ---
 
+## The offload completeness manifest — deterministic, always-on *(built 20 Jul 2026 — 0.7-16)*
+
+The auditor above asks *"is what was written TRUE?"* Nothing asked *"did offload write everything it OWED?"* — and that gap is exactly what fired, repeatedly, before this existed, in SB Product's own ledger (the project that first surfaced it): two sessions each closed with a missing Session Ledger row, caught only a session later; one offload missed **two** writes at once (no Ledger row **and** a stale `**Totals:**` line); a later session found the `**Totals:**` line stale-by-one again at its own orient. **Truth and completeness are different questions, and this build answers the second one — the cold auditor stays exactly what it was, for the first.**
+
+**Why this is deterministic-in-parent, not folded into the cold auditor:** the auditor is fail-**open** — spawn loss is real (~1 in 6, one sample of six, not a calibrated rate) — and if completeness rode on it, that same fraction of offloads would get **no** completeness check, reintroducing the exact silent-skip this exists to kill. Completeness is cheap and mechanical, so it **always** runs, in-parent, regardless of whether the auditor spawns. **Two checks, two reliability classes, on purpose:** completeness = deterministic/always · truth = cold auditor/fail-open.
+
+**Where it sits: after the writes land, before the closeout is allowed to say "clean."** Stage the writes → auditor reviews the diff *about to be written* → write → **completeness manifest re-reads each owed target to confirm it actually landed** → closeout. The completeness pass and the freshness gate's per-write "confirm it landed" step (above) are the same discipline — this section is that discipline, enumerated once instead of applied ad hoc.
+
+**The owed writes — the mechanically checked set** *(every write with a fixed target a re-read can confirm; canonical here — the Build Brief that designed it is a project-layer record of the reasoning, not a file this list depends on)*:
+
+- the SSOT header `**Last updated:**` stamp
+- the Session Log row's **close** (end time · `~Hrs` · summary) and **the `**Totals:**` line update** — the exact write that has failed live before, more than once
+- the project's Session Ledger row, **if the project keeps one**
+- `profile/PROJECTS.md`'s **Sessions** + **Hours** cells, **and** its **Status / Last-session date / Notes cell**
+- `profile/Scoreboard.md`'s roll-up totals **and** its appended history row
+- the session beacon **clear** — *conditional*, only if this sitting's `/orient` posted one (a branch-3 continuation, or any sitting that reaches offload with no beacon of its own, has nothing to clear — see `Clear the session beacon`, below, and this is not a miss)
+- **Done rows moved to `Archive - [PROJECT].md`** — *conditional*, only if a row closed this offload
+- **Noticeboard pins** — *conditional*, only if this session produced a cross-project action
+
+**What it does NOT check — the auditor's domain, on purpose, no overlap:** the *content* of decisions / open-actions writes, and the *content* of the Evidence manifest (that it exists is a mechanical write; whether it's *right* is truth). Completeness confirms **the mechanical write landed**; the auditor confirms **it's true**.
+
+**Report one line, always:**
+- Clean → `✅ manifest: N/N writes confirmed` — the visible antidote to a bare "offloaded cleanly," one notch louder than the auditor's exceptions-only `unaudited` pattern, deliberately: positive confirmation is the whole point here.
+- A miss → **expand and name exactly which owed write is missing or unconfirmed, and refuse to report the offload as clean.** Never report "offloaded cleanly" while any owed item sits unconfirmed — same fail-loud posture as the auditor's `unaudited` flag.
+
+**Honest bound (kernel §13 — this section binds its own description):** this detects a missing write and stops it from *surviving unremarked* — it does not prevent the omission from happening in the first place, and it does not recover a value that was never captured (a start time never taken stays gone; the row is marked `unverified`/a floor, not reconstructed). Same guarantee §13 makes for false claims, extended here to missing writes.
+
+---
+
 ## Session closeout *(what the user sees)*
 
 After writing to the SSOT, present a short closeout — the human-facing half of offload. Three parts:
